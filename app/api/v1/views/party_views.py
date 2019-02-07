@@ -1,11 +1,27 @@
 from flask import Flask, jsonify, request, make_response, Blueprint
-
+from app.api.v1.models.parties_models import PoliticalParties
+from app.api.v1.utils.validators import Validators
 
 pv1 = Blueprint('ap1', __name__, url_prefix='/api/v1')
 
 @pv1.route('/parties', methods=['POST']) 
 def post_party():
-   pass
+    """route for creating a new political party"""
+    data = request.get_json()
+    party_name = data['party_name']
+    hqAddress = data['hqAddress']
+    logoUrl = data['logoUrl']
+    party = PoliticalParties().create_party(party_name, hqAddress, logoUrl)
+    response = Validators().party_data_validator(party_name, hqAddress, logoUrl)
+    
+    if response == True:
+        return make_response(jsonify({
+        'message': 'Political party created successfully',
+        'data' : party
+        }), 201)
+    
+    return make_response(jsonify(response), 400)
+
 
 
 @pv1.route('/parties', methods=['GET']) 
