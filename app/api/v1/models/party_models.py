@@ -18,3 +18,8 @@ class PoliticalParties:
     def get_all_parties(self):
         "Returns all parties"
         return parties
+    
+    def get_one_party(self, party_id):
+        for party in self.parties:
+            if party['party_id'] == party_id:
+                return party
