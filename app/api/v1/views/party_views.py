@@ -34,6 +34,20 @@ def get_parties():
             'Error': 'Political parties cannot be found',
         }), 404)
 
+@pv1.route('/parties/<int:party_id>', methods=['GET']) 
+def get_party(party_id):
+    party = PoliticalParties().get_one_party(party_id)
+    
+    if party:
+        return make_response(jsonify({
+            'message': 'Political party has been successfully retrieved',
+            'data' : party
+        }), 200)
+    
+    return make_response(jsonify({
+        'Error': 'This political party cannot be found',
+    }), 404)
+
 
 @pv1.route('/parties', methods=['GET']) 
 def get_parties():
