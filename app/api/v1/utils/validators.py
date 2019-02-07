@@ -25,5 +25,4 @@ class Validators:
         if len(logoUrl) < 3:
             response = {'Error' : 'Logo URL too short'}
 
-
         return response
