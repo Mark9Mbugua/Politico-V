@@ -20,3 +20,16 @@ def post_office():
     }), 201)
     
     return make_response(jsonify(response), 400)
+
+@ov1.route('/offices', methods=['GET'])
+def get_all_offices():
+    offices = PoliticalOffices().get_offices()
+    if offices:     
+        return make_response(jsonify({
+            'message': 'All political offices retrieved successfully',
+            "data" : offices
+        }), 200)
+    
+    return make_response(jsonify({
+            'Error': 'Political offices cannot be found',
+        }), 404)
