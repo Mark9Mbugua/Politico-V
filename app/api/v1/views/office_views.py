@@ -33,3 +33,16 @@ def get_all_offices():
     return make_response(jsonify({
             'Error': 'Political offices cannot be found',
         }), 404)
+
+@ov1.route('/offices/<int:office_id>', methods=['GET'])
+def get_office(office_id):
+    office = PoliticalOffices().get_one_office(office_id)
+    if office:
+        return make_response(jsonify({
+            'message': 'Political office has been successfully retrieved',
+            "data" : office
+        }), 200)
+    
+    return make_response(jsonify({
+        'Error': 'This political office cannot be found',
+    }), 404)

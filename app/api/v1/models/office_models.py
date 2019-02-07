@@ -17,3 +17,8 @@ class PoliticalOffices:
 
     def get_offices(self):
         return self.offices
+
+    def get_one_office(self, office_id):
+        for office in self.offices:
+            if office['office_id'] == office_id:
+                return office
