@@ -23,3 +23,9 @@ class PoliticalParties:
         for party in self.parties:
             if party['party_id'] == party_id:
                 return party
+    
+    def edit_party(self, party_id, party_name):
+        for party in self.parties:
+            if party['party_id'] == party_id:
+                party['party_name'] = party_name
+                return party

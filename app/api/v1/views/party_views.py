@@ -49,17 +49,17 @@ def get_party(party_id):
     }), 404)
 
 
-@pv1.route('/parties', methods=['GET']) 
-def get_parties():
-    pass
-
-@pv1.route('/parties/<int:party_id>', methods=['GET']) 
-def get_party(party_id):
-    pass
-
 @pv1.route('/parties/<int:party_id>', methods=['PATCH']) 
 def update_party(party_id):
-    pass
-@pv1.route('/parties/<int:party_id>', methods=['DELETE'])
-def delete_party(party_id):
-    pass
+    data = request.get_json()
+    party_name = data['party_name']
+    edit_party = PoliticalParties().edit_party(party_id, party_name)
+    if edit_party:
+        return make_response(jsonify({
+            'message': 'Political party updated successfully',
+            'data' : edit_party
+        }), 200)
+    
+    return make_response(jsonify({
+        'Error': 'This political party cannot be found',
+    }), 404)
