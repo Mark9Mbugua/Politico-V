@@ -29,3 +29,9 @@ class PoliticalParties:
             if party['party_id'] == party_id:
                 party['party_name'] = party_name
                 return party
+    
+    def delete_party(self, party_id):
+        for party in self.parties:
+            if party['party_id'] == party_id:
+                self.parties.remove(party)
+                return party
