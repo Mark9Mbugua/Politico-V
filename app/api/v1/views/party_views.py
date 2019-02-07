@@ -63,3 +63,16 @@ def update_party(party_id):
     return make_response(jsonify({
         'Error': 'This political party cannot be found',
     }), 404)
+
+@pv1.route('/parties/<int:party_id>', methods=['DELETE'])
+def delete_party(party_id):
+    if delete_party:
+        delete_party = PoliticalParties().delete_party(party_id)
+        return make_response(jsonify({
+            'message': "Political Party has been deleted successfully",
+            'data' : delete_party
+        }), 200)
+    
+    return make_response(jsonify({
+        'Error': 'This political party cannot be found',
+    }), 404)
