@@ -14,3 +14,7 @@ class PoliticalParties:
 
         self.parties.append(party)
         return party
+    
+    def get_all_parties(self):
+        "Returns all parties"
+        return parties

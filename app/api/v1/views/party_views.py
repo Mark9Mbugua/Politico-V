@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, make_response, Blueprint
-from app.api.v1.models.parties_models import PoliticalParties
+from app.api.v1.models.party_models import PoliticalParties
 from app.api.v1.utils.validators import Validators
 
 pv1 = Blueprint('ap1', __name__, url_prefix='/api/v1')
@@ -22,6 +22,17 @@ def post_party():
     
     return make_response(jsonify(response), 400)
 
+@pv1.route('/parties', methods=['GET']) 
+def get_parties():
+    parties = PoliticalParties().get_all_parties()
+    if parties:
+        return make_response(jsonify({
+            'message': 'All political parties retrieved successfully',
+            'data' : parties
+        }), 200)
+    return make_response(jsonify({
+            'Error': 'Political parties cannot be found',
+        }), 404)
 
 
 @pv1.route('/parties', methods=['GET']) 
