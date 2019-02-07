@@ -26,3 +26,28 @@ class Validators:
             response = {'Error' : 'Logo URL too short'}
 
         return response
+
+    def office_data_validator(self, office_type, name):
+        response = True
+        if not isinstance(office_type, str):
+            response = {'Error': 'Office type should be in string format'}
+
+        if not isinstance(name, str):
+            response =  {'Error': 'Office name should be in string format'}
+        
+        if  office_type not in self.types_of_offices:
+            response = {'Error': 'Office type must either be Legislative, Executive or County'}
+            
+        if office_type == 'Legislative':
+            if name != 'Member of Parliament' and name != 'Women Rep':
+                response = {'Error': 'Only a Member of Parliament or a Women Rep can occupy a legislative office'} 
+        
+        if office_type == 'Executive':
+            if name != 'President' and name != 'Prime Minister':
+                response = {'Error': 'Only the Presient can occupy an executive office'} 
+
+        if office_type == 'County':
+            if name != 'Governor' and name != 'MCA':
+                response = {'Error': 'Only a Governor or a Women Rep can occupy a county'} 
+
+        return response    
