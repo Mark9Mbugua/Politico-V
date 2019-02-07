@@ -56,7 +56,6 @@ On the terminal type `export FLASK_APP=run.py` and type enter. Run `flask run`
 
 * Python
 * Flask
-* Flask RESTful
 
 ### Credits
 Coypright (c) [Mark Mbugua](https://github.com/Mark9Mbugua)
