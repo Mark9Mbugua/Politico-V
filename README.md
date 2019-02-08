@@ -1,6 +1,6 @@
 # Politico
 
-[![Build Status](https://travis-ci.org/Mark9Mbugua/Politico-V.svg?branch=ch-integrate-travis-ci-%23163817806)](https://travis-ci.org/Mark9Mbugua/Politico-V) [![Coverage Status](https://coveralls.io/repos/github/Mark9Mbugua/Politico-V/badge.svg?branch=ch-add-readme-badges-#163818963)](https://coveralls.io/github/Mark9Mbugua/Politico-V?branch=ch-add-readme-badges-#163818963)
+[![Build Status](https://travis-ci.org/Mark9Mbugua/Politico-V.svg?branch=ch-integrate-travis-ci-%23163817806)](https://travis-ci.org/Mark9Mbugua/Politico-V)    [![Coverage Status](https://coveralls.io/repos/github/Mark9Mbugua/Politico-V/badge.svg?branch=ch-add-readme-badges-#163818963)](https://coveralls.io/github/Mark9Mbugua/Politico-V?branch=ch-add-readme-badges-#163818963)
 
 Politico is a platform that enables citizens to give their mandate to politicians running for different government offices
 while building trust in the process through transparency.
