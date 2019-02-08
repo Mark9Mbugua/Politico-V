@@ -1,6 +1,6 @@
 # Politico
 
-[![Build Status](https://travis-ci.org/Mark9Mbugua/Politico-V.svg?branch=ch-add-readme-badges-%23163818963)](https://travis-ci.org/Mark9Mbugua/Politico-V)     [![Coverage Status](https://coveralls.io/repos/github/Mark9Mbugua/Politico-V/badge.svg?branch=ch-add-readme-badges-#163818963)](https://coveralls.io/github/Mark9Mbugua/Politico-V?branch=ch-add-readme-badges-#163818963) [![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
+[![Build Status](https://travis-ci.org/Mark9Mbugua/Politico-V.svg?branch=ch-add-readme-badges-%23163818963)](https://travis-ci.org/Mark9Mbugua/Politico-V)     [![Coverage Status](https://coveralls.io/repos/github/Mark9Mbugua/Politico-V/badge.svg?branch=ch-add-readme-badges-%23163818963)](https://coveralls.io/github/Mark9Mbugua/Politico-V?branch=ch-add-readme-badges-%23163818963) [![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
 
 Politico is a platform that enables citizens to give their mandate to politicians running for different government offices
 while building trust in the process through transparency.
@@ -8,7 +8,7 @@ while building trust in the process through transparency.
 ## Getting Started
 Clone the repo from GitHub:
     
-    git clone :https://github.com/Mark9Mbugua/Politico-V.git
+    git clone: https://github.com/Mark9Mbugua/Politico-V.git
 
 Navigate to root folder
     `cd Politico-V`
