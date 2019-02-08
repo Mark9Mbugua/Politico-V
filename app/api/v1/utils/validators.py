@@ -8,22 +8,22 @@ class Validators:
     def party_data_validator(self, party_name, hqAddress, logoUrl):
         response = True
         if not isinstance(party_name, str):
-            response = {'Error': 'The name of the political party should be in string format'}
+            response = {'Error': 'Name should be in string format'}
 
         if not isinstance(hqAddress, str):
-            response =  {'Error': 'The party headquarters should be in string format'}
+            response =  {'Error': 'hqAddress should be in string format'}
         
-        if not re.search('[A-Za-z]', hqAddress):
-            response = {'Error': 'HQ Address must have letters'} 
+        if not isinstance(logoUrl, str):
+            response =  {'Error': 'logoUrl should be in string format'}
         
-        if len(party_name) < 3:
-            response = {'Error' : 'Party name too short'}
+        if party_name == "" or party_name == " ":
+            response =  {'Error': 'Party name is required'}
         
-        if len(hqAddress) < 3:
-            response = {'Error' : 'HQ Address too short'}
+        if hqAddress == "" or hqAddress == " ":
+            response =  {'Error': 'hqAddress is required'}
         
-        if len(logoUrl) < 3:
-            response = {'Error' : 'Logo URL too short'}
+        if logoUrl == "" or logoUrl == " ":
+            response =  {'Error': 'logoUrl is required'}
 
         return response
 
@@ -39,15 +39,16 @@ class Validators:
             response = {'Error': 'Office type must either be Legislative, Executive or County'}
             
         if office_type == 'Legislative':
-            if name != 'Member of Parliament' and name != 'Women Rep':
-                response = {'Error': 'Only a Member of Parliament or a Women Rep can occupy a legislative office'} 
+            if name != 'Member of Parliament' and name != 'Women Rep' and name != 'Senator':
+                response = {'Error': 'Only a Senator, Member of Parliament or a Women Rep can occupy a legislative office'} 
         
         if office_type == 'Executive':
             if name != 'President' and name != 'Prime Minister':
-                response = {'Error': 'Only the Presient can occupy an executive office'} 
+                response = {'Error': 'Only the President or the Prime Minister can occupy an executive office'} 
 
         if office_type == 'County':
             if name != 'Governor' and name != 'MCA':
-                response = {'Error': 'Only a Governor or a Women Rep can occupy a county'} 
+                response = {'Error': 'Only a Governor or an MCA can occupy a county office'} 
 
         return response    
+

@@ -40,12 +40,12 @@ def get_party(party_id):
     
     if party:
         return make_response(jsonify({
-            'message': 'Political party has been successfully retrieved',
+            'message': 'Political party retrieved successfully',
             'data' : party
         }), 200)
     
     return make_response(jsonify({
-        'Error': 'This political party cannot be found',
+        'Error': 'Political party cannot be found',
     }), 404)
 
 
@@ -61,18 +61,17 @@ def update_party(party_id):
         }), 200)
     
     return make_response(jsonify({
-        'Error': 'This political party cannot be found',
+        'Error': 'Political party cannot be found',
     }), 404)
 
 @pv1.route('/parties/<int:party_id>', methods=['DELETE'])
 def delete_party(party_id):
+    delete_party = PoliticalParties().delete_party(party_id)
     if delete_party:
-        delete_party = PoliticalParties().delete_party(party_id)
-        return make_response(jsonify({
-            'message': "Political Party has been deleted successfully",
-            'data' : delete_party
-        }), 200)
+            return make_response(jsonify({
+                'message': "Political Party deleted successfully",
+            }), 200)
     
     return make_response(jsonify({
-        'Error': 'This political party cannot be found',
-    }), 404)
+            'Error': 'Political party cannot be found'
+        }), 404)

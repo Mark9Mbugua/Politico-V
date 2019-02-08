@@ -1,5 +1,5 @@
 from flask import Flask, jsonify,request, Blueprint, make_response
-from app.api.v1.models.offices_models import PoliticalOffices
+from app.api.v1.models.office_models import PoliticalOffices
 from app.api.v1.utils.validators import Validators
 
 ov1 = Blueprint('ap2', __name__, url_prefix='/api/v1')
@@ -15,10 +15,10 @@ def post_office():
     
     if response == True:
         return make_response(jsonify({
-        'Message': 'Political office created successfully',
-        "data" : office
-    }), 201)
-    
+        'message': 'Political office created successfully',
+        'data' : office
+        }), 201)
+
     return make_response(jsonify(response), 400)
 
 @ov1.route('/offices', methods=['GET'])
@@ -39,10 +39,10 @@ def get_office(office_id):
     office = PoliticalOffices().get_one_office(office_id)
     if office:
         return make_response(jsonify({
-            'message': 'Political office has been successfully retrieved',
+            'message': 'Political office retrieved successfully',
             "data" : office
         }), 200)
     
     return make_response(jsonify({
-        'Error': 'This political office cannot be found',
+        'Error': 'Political office cannot be found',
     }), 404)
