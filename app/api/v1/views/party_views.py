@@ -17,6 +17,7 @@ def post_party():
     if response == True:
         return make_response(jsonify({
         'message': 'Political party created successfully',
+        'status': 201,
         'data' : party
         }), 201)
     
@@ -28,10 +29,12 @@ def get_parties():
     if parties:
         return make_response(jsonify({
             'message': 'All political parties retrieved successfully',
+            'status': 200,
             'data' : parties
         }), 200)
     return make_response(jsonify({
             'Error': 'Political parties cannot be found',
+            'status': 404,
         }), 404)
 
 @pv1.route('/parties/<int:party_id>', methods=['GET']) 
@@ -41,11 +44,13 @@ def get_party(party_id):
     if party:
         return make_response(jsonify({
             'message': 'Political party retrieved successfully',
+            'status': 200,
             'data' : party
         }), 200)
     
     return make_response(jsonify({
         'Error': 'Political party cannot be found',
+        'status': 404,
     }), 404)
 
 
@@ -57,11 +62,13 @@ def update_party(party_id):
     if edit_party:
         return make_response(jsonify({
             'message': 'Political party updated successfully',
+            'status': 200,
             'data' : edit_party
         }), 200)
     
     return make_response(jsonify({
         'Error': 'Political party cannot be found',
+        'status': 404,
     }), 404)
 
 @pv1.route('/parties/<int:party_id>', methods=['DELETE'])
@@ -70,8 +77,10 @@ def delete_party(party_id):
     if delete_party:
             return make_response(jsonify({
                 'message': "Political Party deleted successfully",
+                'status': 200,
             }), 200)
     
     return make_response(jsonify({
-            'Error': 'Political party cannot be found'
+            'Error': 'Political party cannot be found',
+            'status': 404,
         }), 404)

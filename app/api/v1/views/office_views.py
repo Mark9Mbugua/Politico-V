@@ -16,6 +16,7 @@ def post_office():
     if response == True:
         return make_response(jsonify({
         'message': 'Political office created successfully',
+        'status': 201,
         'data' : office
         }), 201)
 
@@ -27,12 +28,14 @@ def get_all_offices():
     if offices:     
         return make_response(jsonify({
             'message': 'All political offices retrieved successfully',
+            'status': 200,
             "data" : offices
         }), 200)
     
     return make_response(jsonify({
-            'Error': 'Political offices cannot be found',
-        }), 404)
+        'Error': 'Political offices cannot be found',
+        'status': 404,
+    }), 404)
 
 @ov1.route('/offices/<int:office_id>', methods=['GET'])
 def get_office(office_id):
@@ -40,9 +43,11 @@ def get_office(office_id):
     if office:
         return make_response(jsonify({
             'message': 'Political office retrieved successfully',
+            'status': 200,
             "data" : office
         }), 200)
     
     return make_response(jsonify({
         'Error': 'Political office cannot be found',
+        'status': 404,
     }), 404)
