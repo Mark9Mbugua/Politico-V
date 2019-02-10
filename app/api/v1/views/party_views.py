@@ -67,10 +67,29 @@ def get_party(party_id):
 
 @pv1.route('/parties/<int:party_id>', methods=['PATCH']) 
 def update_party(party_id):
-    data = request.get_json()
-    party_name = data['party_name']
-    edit_party = PoliticalParties().edit_party(party_id, party_name)
+    try:
+        data = request.get_json()
+        party_name = data['party_name']
+        edit_party = PoliticalParties().edit_party(party_id, party_name)
+    except KeyError:
+        return make_response(jsonify({
+            'Error': 'One or more keys is missing',
+            'status' : 400
+            }), 400)
+
     if edit_party:
+        if party_name == "" or party_name.isspace():
+            return make_response(jsonify({
+                'Error': 'Party name is required', 
+                'status': 400
+            }), 400)
+        
+        if not all(x.isalpha() or x.isspace() for x in party_name):
+            return make_response(jsonify({
+                'Error': 'Name should only have letters and spaces', 
+                'status': 400
+            }), 400)
+        
         return make_response(jsonify({
             'message': 'Political party updated successfully',
             'status': 200,
@@ -86,10 +105,10 @@ def update_party(party_id):
 def delete_party(party_id):
     delete_party = PoliticalParties().delete_party(party_id)
     if delete_party:
-            return make_response(jsonify({
-                'message': "Political Party deleted successfully",
-                'status': 200,
-            }), 200)
+        return make_response(jsonify({
+            'message': "Political Party deleted successfully",
+            'status': 200,
+        }), 200)
     
     return make_response(jsonify({
             'Error': 'Political party cannot be found',
