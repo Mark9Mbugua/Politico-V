@@ -7,11 +7,17 @@ ov1 = Blueprint('ap2', __name__, url_prefix='/api/v1')
 
 @ov1.route('/offices', methods=['POST'])
 def post_office():
-    data = request.get_json()
-    office_type = data["office_type"]
-    name = data["name"]
-    office = PoliticalOffices().create_office(office_type, name)
-    response = Validators().office_data_validator(office_type, name)
+    try:
+        data = request.get_json()
+        office_type = data["office_type"]
+        name = data["name"]
+        office = PoliticalOffices().create_office(office_type, name)
+        response = Validators().office_data_validator(office_type, name)
+    except KeyError:
+        return make_response(jsonify({
+            'Error': 'One or more keys is missing',
+            'status' : 400
+            }), 400)
     
     if response == True:
         return make_response(jsonify({

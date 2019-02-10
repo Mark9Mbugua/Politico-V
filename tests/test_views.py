@@ -12,9 +12,10 @@ class TestElectionsCase(unittest.TestCase):
         self.client = app.test_client()
         self.party = dummy_data['party']
         self.office = dummy_data['office']
-        self.party_name_not_str = dummy_data['party_name_not_str']
-        self.hq_add_not_str = dummy_data['hq_add_not_str']
-        self.logoUrl_not_str = dummy_data['logoUrl_not_str']
+        self.party_less_keys = dummy_data['party_less_keys']
+        self.office_less_keys = dummy_data['office_less_keys']
+        self.hq_add_not_spaces_int_str = dummy_data['hq_add_not_spaces_int_str']
+        self.hq_add_no_str = dummy_data['hq_add_no_str']
         self.party_name_blank = dummy_data['party_name_blank']
         self.hqAddress_blank = dummy_data['hqAddress_blank']
         self.logoUrl_blank = dummy_data['logoUrl_blank']
@@ -33,6 +34,9 @@ class TestElectionsCase(unittest.TestCase):
         self.county_mismatch_senator = dummy_data['county_mismatch_senator']
         self.county_mismatch_mp = dummy_data['county_mismatch_mp']
         self.county_mismatch_women_rep = dummy_data['county_mismatch_women_rep']
+        self.logoUrl_no_scheme = dummy_data['logoUrl_no_scheme']
+        self.logoUrl_no_netloc = dummy_data['logoUrl_no_netloc']
+        self.logoUrl_no_path = dummy_data['logoUrl_no_path']
 
 
 class TestNormalRequestCase(TestElectionsCase):
@@ -118,24 +122,31 @@ class TestNormalRequestCase(TestElectionsCase):
 
 class TestBadRequestCase(TestElectionsCase):
 
-    def test_party_name_not_string(self):
-        response = self.client.post('/api/v1/parties', data=json.dumps(self.party_name_not_str), content_type='application/json')
+    def test_party_less_keys(self):
+        response = self.client.post('/api/v1/parties', data=json.dumps(self.party_less_keys), content_type='application/json')
         result = json.loads(response.data)
-        self.assertEqual(result['Error'], 'Name should be in string format')
+        self.assertEqual(result['Error'], 'One or more keys is missing')
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
     
-    def test_hq_add_not_str(self):
-        response = self.client.post('/api/v1/parties', data=json.dumps(self.hq_add_not_str), content_type='application/json')
+    def test_office_less_keys(self):
+        response = self.client.post('/api/v1/parties', data=json.dumps(self.office_less_keys), content_type='application/json')
         result = json.loads(response.data)
-        self.assertEqual(result['Error'], 'hqAddress should be in string format')
+        self.assertEqual(result['Error'], 'One or more keys is missing')
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
     
-    def test_logoUrl_not_str(self):
-        response = self.client.post('/api/v1/parties', data=json.dumps(self.logoUrl_not_str), content_type='application/json')
+    def test_hq_add_not_spaces_int_str(self):
+        response = self.client.post('/api/v1/parties', data=json.dumps(self.hq_add_not_spaces_int_str), content_type='application/json')
         result = json.loads(response.data)
-        self.assertEqual(result['Error'], 'logoUrl should be in string format')
+        self.assertEqual(result['Error'], 'hqAddress should have letters, spaces and numbers only')
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse('data' in result)
+    
+    def test_hq_add_no_str(self):
+        response = self.client.post('/api/v1/parties', data=json.dumps(self.hq_add_no_str), content_type='application/json')
+        result = json.loads(response.data)
+        self.assertEqual(result['Error'], 'hqAddress should have letters too')
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
 
@@ -156,7 +167,7 @@ class TestBadRequestCase(TestElectionsCase):
     def test_logoUrl_blank(self):
         response = self.client.post('/api/v1/parties', data=json.dumps(self.logoUrl_blank), content_type='application/json')
         result = json.loads(response.data)
-        self.assertEqual(result['Error'], 'logoUrl is required')
+        self.assertEqual(result['Error'], "logoUrl should be in the format 'https://www.twitter.com/profile/img.jpg'")
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
     
@@ -264,40 +275,65 @@ class TestBadRequestCase(TestElectionsCase):
         self.assertEqual(result['Error'], 'Only a Governor or an MCA can occupy a county office')
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
+    
+    def test_logoUrl_no_scheme(self):
+        """Test POST party logoUrl no scheme"""
+        response = self.client.post('/api/v1/parties', data=json.dumps(self.logoUrl_no_scheme), content_type='application/json')
+        result = json.loads(response.data)
+        self.assertEqual(result['Error'], "logoUrl should be in the format 'https://www.twitter.com/profile/img.jpg'")
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse('data' in result)
+    
+    def test_logoUrl_no_netloc(self):
+        """Test POST party logoUrl no netloc"""
+        response = self.client.post('/api/v1/parties', data=json.dumps(self.logoUrl_no_netloc), content_type='application/json')
+        result = json.loads(response.data)
+        self.assertEqual(result['Error'], "logoUrl should be in the format 'https://www.twitter.com/profile/img.jpg'")
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse('data' in result)
+    
+    def test_logoUrl_no_path(self):
+        """Test POST party logoUrl no path"""
+        response = self.client.post('/api/v1/parties', data=json.dumps(self.logoUrl_no_path), content_type='application/json')
+        result = json.loads(response.data)
+        self.assertEqual(result['Error'], "logoUrl should be in the format 'https://www.twitter.com/profile/img.jpg'")
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse('data' in result)
 
-class TestNotFoundCase(TestElectionsCase):
+class TestNotFoundCase(TestElectionsCase):   
+    def test_get_specific_party_invalid_id(self):
+        """Test GET a specific party but with invalid Id"""
+        response = self.client.get('/api/v1/parties/300', data=json.dumps(self.party), content_type='application/json')
+        result = json.loads(response.data)
+        self.assertEqual(result['Error'], 'Political party cannot be found')
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse('data' in result)
         
-        def test_get_specific_party_invalid_id(self):
-            """Test GET a specific party but with invalid Id"""
-            response = self.client.get('/api/v1/parties/300', data=json.dumps(self.party), content_type='application/json')
-            result = json.loads(response.data)
-            self.assertEqual(result['Error'], 'Political party cannot be found')
-            self.assertEqual(response.status_code, 404)
-            self.assertFalse('data' in result)
-        
-        def test_edit_specific_party_invalid_id(self):
-            """Test PATCH specific party invalid id request"""
-            response = self.client.patch('/api/v1/parties/106', data=json.dumps(self.party), content_type='application/json')
-            result = json.loads(response.data)
-            self.assertEqual(result['Error'], 'Political party cannot be found')
-            self.assertEqual(response.status_code, 404)
-            self.assertFalse('data' in result)
+    def test_edit_specific_party_invalid_id(self):
+        """Test PATCH specific party invalid id request"""
+        response = self.client.patch('/api/v1/parties/106', data=json.dumps(self.party), content_type='application/json')
+        result = json.loads(response.data)
+        self.assertEqual(result['Error'], 'Political party cannot be found')
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse('data' in result)
 
-        def test_delete_specific_party_invalid_id(self):
-            """Test DELETE specific party invalid id request"""
-            response = self.client.delete('/api/v1/parties/106', data=json.dumps(self.party), content_type='application/json')
-            result = json.loads(response.data)
-            self.assertEqual(result['Error'], 'Political party cannot be found')
-            self.assertEqual(response.status_code, 404)
-            self.assertFalse('data' in result)
+    def test_delete_specific_party_invalid_id(self):
+        """Test DELETE specific party invalid id request"""
+        response = self.client.delete('/api/v1/parties/106', data=json.dumps(self.party), content_type='application/json')
+        result = json.loads(response.data)
+        self.assertEqual(result['Error'], 'Political party cannot be found')
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse('data' in result)
+    
+    def test_get_specific_office_invalid_id(self):
+        """Test GET specific party invalid id request"""
+        response = self.client.get('/api/v1/offices/106', data=json.dumps(self.office), content_type='application/json')
+        result = json.loads(response.data)
+        self.assertEqual(result['Error'], 'Political office cannot be found')
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse('data' in result)
         
-        def test_get_specific_office_invalid_id(self):
-            """Test GET specific party invalid id request"""
-            response = self.client.get('/api/v1/offices/106', data=json.dumps(self.office), content_type='application/json')
-            result = json.loads(response.data)
-            self.assertEqual(result['Error'], 'Political office cannot be found')
-            self.assertEqual(response.status_code, 404)
-            self.assertFalse('data' in result)
+
         
         
     

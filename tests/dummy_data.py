@@ -2,7 +2,7 @@
 party = {
         "party_name": "Jubilee",
         "hqAddress": "Muthaiga",
-        "logoUrl": "jubilee.co.ke"
+        "logoUrl": 'https://www.twitter.com/profile/img.jpg'
 }
 
 # offices dummy data
@@ -11,10 +11,13 @@ office = {
     'name': "Member of Parliament"
 }
 
-party_name_not_str = {
-    "party_name": 12345,
-    "hqAddress" : "Kinangop",
-    "logoUrl" : "nasa.co.ke" 
+party_less_keys = {
+    "party_name": "Jubilee",
+    "hqAddress" : "Kinangop"
+}
+
+office_less_keys = {
+    "office_name": "Legislative"
 }
 
 party_name_blank = {
@@ -35,16 +38,33 @@ logoUrl_blank = {
     "logoUrl" : " " 
 }
 
-hq_add_not_str = {
+logoUrl_no_scheme = {
+   "party_name": "The Northerners",
+    "hqAddress" : "Winterfell",
+    "logoUrl" : "//www.twitter.com/profile_pic.jpg"  
+}
+
+logoUrl_no_netloc = {
+   "party_name": "Nasa ODM",
+    "hqAddress" : "Ngong Road",
+    "logoUrl" : "https:/profile_pic.jpg"  
+}
+
+logoUrl_no_path = {
+   "party_name": "Ile Flani ya Wetangula",
+    "hqAddress" : "Kwa Bibi yake",
+    "logoUrl" : "https://www.twitter.com"  
+}
+hq_add_not_spaces_int_str = {
     "party_name": "Jubilee",
-    "hqAddress" : 123456,
+    "hqAddress" : "............",
     "logoUrl" : "nasa.co.ke" 
 }
 
-logoUrl_not_str = {
+hq_add_no_str = {
     "party_name": "Jubilee",
-    "hqAddress" : "Muthaiga",
-    "logoUrl" : 323434 
+    "hqAddress" : "106106",
+    "logoUrl" : "nasa.co.ke" 
 }
 
 invalid_office_type = {
@@ -125,12 +145,16 @@ county_mismatch_women_rep = {
 dummy_data = {
     'party': party,
     'office' : office,
-    'party_name_not_str' : party_name_not_str,
-    'hq_add_not_str' : hq_add_not_str,
-    'logoUrl_not_str' : logoUrl_not_str,
+    'party_less_keys' : party_less_keys,
+    'office_less_keys': office_less_keys,
+    'hq_add_not_spaces_int_str' : hq_add_not_spaces_int_str,
+    'hq_add_no_str' : hq_add_no_str,
     'party_name_blank' : party_name_blank,
     'hqAddress_blank' : hqAddress_blank,
     'logoUrl_blank' : logoUrl_blank,
+    'logoUrl_no_scheme': logoUrl_no_scheme,
+    'logoUrl_no_netloc': logoUrl_no_netloc,
+    'logoUrl_no_path': logoUrl_no_path,
     'invalid_office_type' : invalid_office_type,
     'legislative_mismatch_president' : legislative_mismatch_president,
     'legislative_mismatch_prime_minister' : legislative_mismatch_prime_minister,
