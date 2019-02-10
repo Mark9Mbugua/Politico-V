@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, make_response, Blueprint
 from app.api.v1.models.party_models import PoliticalParties
 from app.api.v1.utils.validators import Validators
+from app.api.v1.utils.logo_validator import LogoUrlValidator
 
 pv1 = Blueprint('ap1', __name__, url_prefix='/api/v1')
 
@@ -8,20 +9,30 @@ pv1 = Blueprint('ap1', __name__, url_prefix='/api/v1')
 def post_party():
     """route for creating a new political party"""
     data = request.get_json()
-    party_name = data['party_name']
-    hqAddress = data['hqAddress']
-    logoUrl = data['logoUrl']
-    party = PoliticalParties().create_party(party_name, hqAddress, logoUrl)
-    response = Validators().party_data_validator(party_name, hqAddress, logoUrl)
+    try:
+        party_name = data['party_name']
+        hqAddress = data['hqAddress']
+        logoUrl = data['logoUrl']
+        party = PoliticalParties().create_party(party_name, hqAddress, logoUrl)
+        response = Validators().party_data_validator(party_name, hqAddress)
+        result = LogoUrlValidator().validate_logo_url(logoUrl)
+    except KeyError:
+        return make_response(jsonify({
+            'Error': 'One or more keys is missing',
+            'status' : 400
+            }), 400)
     
     if response == True:
-        return make_response(jsonify({
-        'message': 'Political party created successfully',
-        'status': 201,
-        'data' : party
-        }), 201)
+        if result == True:
+            return make_response(jsonify({
+            'message': 'Political party created successfully',
+            'status': 201,
+            'data' : party
+            }), 201)
+        return make_response(jsonify(result), 400)
     
     return make_response(jsonify(response), 400)
+    
 
 @pv1.route('/parties', methods=['GET']) 
 def get_parties():
