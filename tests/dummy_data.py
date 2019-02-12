@@ -4,15 +4,16 @@ party = {
         "hqAddress": "Muthaiga",
         "logoUrl": 'https://www.jubilee.com/jubilee/img.jpg'
 }
+
+party_two = {
+        "party_name": "Jubilee",
+        "hqAddress": "Muthaiga",
+        "logoUrl": 'https://www.jubilee.com/jubilee/img.jpg'
+}
 # offices dummy data
 office = {
     'office_type' : "Legislative",
     'name': "Member of Parliament"
-}
-
-office_two = {
-        "name": "President",
-        "office_type": "Executive"
 }
 
 party_less_keys = {
@@ -23,7 +24,9 @@ party_less_keys = {
 edit_party_no_name_key = {}
 
 party_name_not_purely_alpha_and_space = {
-    "party_name" : "Jubilee106"
+    "party_name" : "Jubilee106",
+    "hqAddress": "Muthaiga",
+    "logoUrl": 'https://www.jubilee.com/jubilee/img.jpg'
 }
 
 office_less_keys = {
@@ -155,7 +158,6 @@ county_mismatch_women_rep = {
 dummy_data = {
     'party': party,
     'office' : office,
-    'office_two' : office_two,
     'party_less_keys' : party_less_keys,
     'office_less_keys': office_less_keys,
     'hq_add_not_spaces_int_str' : hq_add_not_spaces_int_str,

@@ -11,7 +11,6 @@ class TestElectionsCase(unittest.TestCase):
         app = create_app(config_name="testing")
         self.client = app.test_client()
         self.office = dummy_data['office']
-        self.office_two = dummy_data['office_two']
         self.office_less_keys = dummy_data['office_less_keys']
         self.invalid_office_type = dummy_data['invalid_office_type']
         self.legislative_mismatch_president = dummy_data['legislative_mismatch_president']
@@ -41,20 +40,20 @@ class TestOfficeRequestCase(TestElectionsCase):
 
     def test_get_all_offices(self):
         """Test GET all offices Request"""
-        response = self.client.post('/api/v1/offices', data=json.dumps(self.office_two), content_type='application/json')
+        response = self.client.post('/api/v1/offices', data=json.dumps(self.office), content_type='application/json')
         result = json.loads(response.data)
         response = self.client.get('/api/v1/offices')
         result = json.loads(response.data)
         self.assertEqual(result['message'], 'All political offices retrieved successfully')
         self.assertEqual(response.status_code, 200)
         self.assertTrue('data' in result)
-        self.assertIn('President', str(result))
+        self.assertIn('Legislative', str(result))
     
     def test_get_specific_office(self):
         """Test GET one office request"""
         response = self.client.post('/api/v1/offices', data=json.dumps(self.office), content_type='application/json')
         result = json.loads(response.data)
-        response = self.client.get('/api/v1/offices/2')
+        response = self.client.get('/api/v1/offices/1')
         result = json.loads(response.data)
         self.assertEqual(result['message'], 'Political office retrieved successfully')
         self.assertEqual(response.status_code, 200)

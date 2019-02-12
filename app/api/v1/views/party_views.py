@@ -17,7 +17,7 @@ def post_party():
         hqAddress = data['hqAddress']
         logoUrl = data['logoUrl']
         for one_party in parties:
-            if one_party['party_name'] == party_name or one_party['hqAddress'] == hqAddress or one_party['logoUrl'] == logoUrl:
+            if one_party['party_name'] == party_name and one_party['hqAddress'] == hqAddress and one_party['logoUrl'] == logoUrl:
                 return Serializer.error_serializer('This party already exists', 400), 400
         
         party = PoliticalParties().create_party(party_name, hqAddress, logoUrl)
@@ -66,7 +66,7 @@ def update_party(party_id):
             return Serializer.error_serializer('Party name is required', 400), 400
         
         if not all(x.isalpha() or x.isspace() for x in party_name):
-            return Serializer.error_serializer('Name should only have letters and spaces', 404), 404
+            return Serializer.error_serializer('Name should only have letters and spaces', 400), 400
         
         return Serializer.json_serializer('Political party updated successfully', edit_party, 200), 200
     

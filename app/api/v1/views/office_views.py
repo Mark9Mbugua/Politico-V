@@ -26,7 +26,7 @@ def post_office():
 def get_all_offices():
     offices = PoliticalOffices().get_offices()
     if offices:     
-        Serializer.json_serializer('All political offices retrieved successfully', offices, 200), 200
+        return Serializer.json_serializer('All political offices retrieved successfully', offices, 200), 200
     
     return Serializer.error_serializer('Political office cannot be found', 404), 404
 
