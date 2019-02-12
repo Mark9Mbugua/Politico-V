@@ -28,9 +28,7 @@ On the terminal type `export FLASK_APP=run.py` and hit enter. Run `flask run`
 
 #### On Postman and Heroku, use the following endpoints to perform the specified tasks
 
-Use the URL below to test the following endpoints:
-
-    https://politico-v.herokuapp.com/
+Use this URL below to test the following endpoints: https://politico-v.herokuapp.com/
 
 		 
 | 	Endpoint                                |   Functionality                                |    
