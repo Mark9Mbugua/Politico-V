@@ -2,9 +2,14 @@
 party = {
         "party_name": "Jubilee",
         "hqAddress": "Muthaiga",
-        "logoUrl": 'https://www.twitter.com/profile/img.jpg'
+        "logoUrl": 'https://www.jubilee.com/jubilee/img.jpg'
 }
 
+party_two = {
+        "party_name": "Jubilee",
+        "hqAddress": "Muthaiga",
+        "logoUrl": 'https://www.jubilee.com/jubilee/img.jpg'
+}
 # offices dummy data
 office = {
     'office_type' : "Legislative",
@@ -14,6 +19,14 @@ office = {
 party_less_keys = {
     "party_name": "Jubilee",
     "hqAddress" : "Kinangop"
+}
+
+edit_party_no_name_key = {}
+
+party_name_not_purely_alpha_and_space = {
+    "party_name" : "Jubilee106",
+    "hqAddress": "Muthaiga",
+    "logoUrl": 'https://www.jubilee.com/jubilee/img.jpg'
 }
 
 office_less_keys = {
@@ -155,6 +168,7 @@ dummy_data = {
     'logoUrl_no_scheme': logoUrl_no_scheme,
     'logoUrl_no_netloc': logoUrl_no_netloc,
     'logoUrl_no_path': logoUrl_no_path,
+    'edit_party_no_name_key': edit_party_no_name_key,
     'invalid_office_type' : invalid_office_type,
     'legislative_mismatch_president' : legislative_mismatch_president,
     'legislative_mismatch_prime_minister' : legislative_mismatch_prime_minister,
@@ -170,5 +184,6 @@ dummy_data = {
     'county_mismatch_senator' : county_mismatch_senator,
     'county_mismatch_mp' : county_mismatch_mp,
     'county_mismatch_women_rep' : county_mismatch_women_rep,
+    'party_name_not_purely_alpha_and_space' : party_name_not_purely_alpha_and_space
     
 }
