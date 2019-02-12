@@ -8,7 +8,7 @@ while building trust in the process through transparency.
 ## Getting Started
 Clone the repo from GitHub:
     
-    git clone: https://github.com/Mark9Mbugua/Politico-V.git
+    git clone: https://github.com/Mark9Mbugua/Politico-V.git    
 
 Navigate to root folder
     `cd Politico-V`
@@ -19,14 +19,18 @@ Create a virtual environment
 Activate the virtual environment from the root folder
     `source ./venv/Scripts/activate`
 
-Install the required packages
-    `pip install -r requirements.txt`
+Install Flask
+    `pip install Flask`
 
 ## Starting the API
 
-On the terminal type `export FLASK_APP=run.py` and type enter. Run `flask run`
+On the terminal type `export FLASK_APP=run.py` and hit enter. Run `flask run`
 
-## Use the following endpoints to perform the specified tasks
+## On Postman and Heroku, use the following endpoints to perform the specified tasks
+
+Use the URL below to test the following endpoints:
+    https://politico-v.herokuapp.com/
+
 		 
 | 	Endpoint                                |   Functionality                                |    
 | ------------------------------------------|------------------------------------------------|
