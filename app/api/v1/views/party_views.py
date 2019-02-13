@@ -28,7 +28,7 @@ def post_party():
     
     if response == True:
         if result == True:
-            return Serializer.json_serializer('Political party created successfully', party, 201), 201
+            return Serializer.json_serializer('Political party created successfully', data, 201), 201
         return make_response(jsonify(result), 400)
     
     return make_response(jsonify(response), 400)
