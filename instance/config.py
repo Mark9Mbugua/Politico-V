@@ -8,16 +8,20 @@ class Config:
 class DevelopmentConfig(Config):
     """Configurations for Development."""
     DEBUG = True
-    DATABASE_URL='postgresql://postgres:1998@localhost:5432/politico_db'
-
+    DEVELOPMENT = True
+    
 class TestingConfig(Config):
     """Configurations for Testing."""
     TESTING = True
     DEBUG = True
-    DATABASE_URL='postgresql://postgres:1998@localhost:5432/test_politico_db'
 
+class StagingConfig(Config):
+    """Configurations for Staging."""
+    DEVELOPMENT = True
+    DEBUG = True
 
 app_config = {  
                 'development': DevelopmentConfig,
-                'testing' : TestingConfig
+                'testing' : TestingConfig,
+                'staging': StagingConfig
             }

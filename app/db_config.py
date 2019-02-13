@@ -1,26 +1,47 @@
-import os
 import psycopg2
+import os
 
-db_url  =os.getenv('DATABASE_URL')
+db_url = os.getenv('DATABASE_URL')
+test_db_url = os.getenv('TEST_DATABASE_URL')
 
 def create_tables():
-    conn = connection(db_url)
+    conn = init_db()
     cur = conn.cursor()
     queries = tables()
 
     for query in queries:
         cur.execute(query)
-    cur.close()
     conn.commit()
-    conn.close()
+
+def create_test_tables():
+    conn = test_init_db()
+    cur = conn.cursor()
+    queries = tables()
+
+    for query in queries:
+        cur.execute(query)
+    conn.commit()
 
 def drop_tables():
     conn = connection(db_url)
     cur = conn.cursor()
-    users = "DROP TABLE IF EXISTS users CASCADE;"
-    offices = "DROP TABLE IF EXISTS offices CASCADE;"
-    parties = "DROP TABLE IF EXISTS parties CASCADE;"
-    queries = [users, offices, parties]
+    parties = """DROP TABLE IF EXISTS parties CASCADE"""
+    offices = """DROP TABLE IF EXISTS offices CASCADE"""
+    users = """DROP TABLE IF EXISTS users CASCADE"""
+    queries = [parties, offices, users]
+
+    for query in queries:
+        cur.execute(query)
+    conn.commit()
+
+def drop_test_tables():
+    conn = connection(test_db_url)
+    cur = conn.cursor()
+    parties = """DROP TABLE IF EXISTS parties CASCADE"""
+    offices = """DROP TABLE IF EXISTS offices CASCADE"""
+    users = """DROP TABLE IF EXISTS users CASCADE"""
+    queries = [parties, offices, users]
+
     for query in queries:
         cur.execute(query)
     conn.commit()
@@ -29,22 +50,35 @@ def connection(url):
     connect = psycopg2.connect(url)
     return connect
 
-def tables():
-    table1 = """CREATE TABLE IF NOT EXISTS users(
-        user_id SEIRAL PRIMARY KEY,
-        name varchar (50) NOT NULL,
-        email varchar UNIQUE,
-        password varchar (50) NOT NULL,
-        role varchar)"""
 
-    table2 = """CREATE TABLE IF NOT EXISTS parties(
-            party_id SERIAL PRIMARY KEY,
-            party_name varchar UNIQUE,
-            logoUrl varchar (80) NOT NULL)"""
+def init_db():
+    connect = connection(db_url)
+    return connect
+
+def test_init_db():
+    connect = connection(test_db_url)
+    return connect
+
+def tables():
     
-    table3 = """CREATE TABLE IF NOT EXISTS offices(
-            office_id Serial PRIMARY KEY,
-            name varchar (75) NOT NULL)"""
-    
+    table1 = """CREATE TABLE IF NOT EXISTS users(
+                user_id serial PRIMARY KEY,
+                name varchar,
+                email varchar UNIQUE,
+                password varchar,
+                role varchar)"""
+
+
+    table2 = """CREATE TABLE IF NOT EXISTS offices (
+            office_id SERIAL PRIMARY KEY NOT NULL,
+            office_name VARCHAR(80) NOT NULL,
+            office_type VARCHAR(80) NOT NULL)"""
+
+    table3 = """CREATE TABLE IF NOT EXISTS parties (
+            party_id SERIAL PRIMARY KEY NOT NULL,
+            party_name VARCHAR(80) NOT NULL,
+            logoUrl VARCHAR(80) NOT NULL,
+            hqAddress VARCHAR(80) NOT NULL)"""
+
     queries = [table1, table2, table3]
     return queries
