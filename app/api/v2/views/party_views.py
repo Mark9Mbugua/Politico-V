@@ -15,7 +15,10 @@ def post_party():
         data = request.get_json()
         party_name = data['party_name']
         hqAddress = data['hqAddress']
-        logoUrl = data['logoUrl']        
+        logoUrl = data['logoUrl']
+        for one_party in parties:
+            if one_party['name'] == party_name:
+                return Serializer.error_serializer('Party already exists', 400), 400
         party = PoliticalParties().create(party_name, hqAddress, logoUrl)
         response = Validators().party_data_validator(party_name, hqAddress)
         result = LogoUrlValidator().validate_logo_url(logoUrl)

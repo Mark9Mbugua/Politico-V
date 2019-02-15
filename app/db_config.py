@@ -82,6 +82,6 @@ def tables():
             party_name VARCHAR(80) NOT NULL,
             logoUrl VARCHAR(80) NOT NULL,
             hqAddress VARCHAR(80) NOT NULL)"""
-
+    
     queries = [table1, table2, table3]
     return queries
