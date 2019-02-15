@@ -55,7 +55,7 @@ class Validators:
 
         return response 
     
-    def user_sign_up_validator(self, username, email, password):
+    def user_sign_up_validator(self, firstname, lastname, email, phone, password):
         """ validates user password """
         response = True
         if len(password) < 5:
@@ -71,13 +71,19 @@ class Validators:
         if not re.search('[0-9]', password):
             response = {'Error': 'Password should have atleast one number'}, 404
         
-        if not all(x.isalpha() or x.isspace() for x in username):
+        if not all(x.isalpha() or x.isspace() for x in firstname):
+            response = {'Error': 'Username should only have letters and spaces', 'Status': 400}
+        
+        if not all(x.isalpha() or x.isspace() for x in firstname):
             response = {'Error': 'Username should only have letters and spaces', 'Status': 400}
         
         if re.search('@', email) is None:
             response = {'Error': "Email should be in the format 'name@address.com'", 'Status': 400}
         
-        if not isinstance(username, str):
+        if not isinstance(firstname, str):
+            response = {'Error': 'Name should be in string format', 'Status': 400}
+        
+        if not isinstance(lastname, str):
             response = {'Error': 'Name should be in string format', 'Status': 400}
         
         if not isinstance(email, str):
@@ -85,6 +91,13 @@ class Validators:
         
         if len(email) < 7:
             response = {'Error': 'Email is too short', 'Status': 400}
+        
+        if not all(x.isdigit() for x in phone):
+            response = {'Error': 'Phone number should have digits only', 'Status': 400}
+        
+        if len(phone) < 8:
+            response = {'Error': 'Phone number should have at least 8 digits', 'Status': 400}
+
         
         return response
         

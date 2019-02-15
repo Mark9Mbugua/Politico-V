@@ -63,8 +63,10 @@ def tables():
     
     table1 = """CREATE TABLE IF NOT EXISTS users(
                 user_id SERIAL PRIMARY KEY NOT NULL,
-                username VARCHAR(80) NOT NULL,
+                firstname VARCHAR(80) NOT NULL,
+                lastname VARCHAR(80) NOT NULL,
                 email VARCHAR(80) NOT NULL UNIQUE,
+                phone INTEGER NOT NULL UNIQUE,
                 password VARCHAR NOT NULL,
                 role VARCHAR(80) NOT NULL DEFAULT 'User',
                 date_created timestamp with time zone DEFAULT ('now'::text)::date)"""
