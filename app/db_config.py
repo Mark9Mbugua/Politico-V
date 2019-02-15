@@ -62,11 +62,14 @@ def test_init_db():
 def tables():
     
     table1 = """CREATE TABLE IF NOT EXISTS users(
-                user_id serial PRIMARY KEY,
-                name varchar,
-                email varchar UNIQUE,
-                password varchar,
-                role varchar)"""
+                user_id SERIAL PRIMARY KEY NOT NULL,
+                firstname VARCHAR(80) NOT NULL,
+                lastname VARCHAR(80) NOT NULL,
+                email VARCHAR(80) NOT NULL UNIQUE,
+                phone INTEGER NOT NULL UNIQUE,
+                password VARCHAR NOT NULL,
+                role VARCHAR(80) NOT NULL DEFAULT 'User',
+                date_created timestamp with time zone DEFAULT ('now'::text)::date)"""
 
 
     table2 = """CREATE TABLE IF NOT EXISTS offices (

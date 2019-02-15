@@ -1,7 +1,6 @@
 from app.db_config import init_db
 import psycopg2
 import itertools
-import json
 
 class PoliticalParties():
     def __init__(self):
