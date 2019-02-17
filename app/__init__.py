@@ -1,11 +1,12 @@
 from flask import Flask, Blueprint, request, jsonify
 from instance.config import app_config
-from .db_config import create_tables, drop_tables
+from .db_config import init_db, drop_tables
 from flask_jwt_extended import JWTManager
 
-def create_app(config_name='development'):
-    app = Flask(__name__)
+def create_app(config_name):
+    app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
+    app.config.from_pyfile('config.py')
     app.config['JWT_SECRET_KEY'] = 'a-big-secret'
     
     JWTManager(app)
@@ -25,5 +26,6 @@ def create_app(config_name='development'):
     from .api.v2.views.user_views import uv2
     app.register_blueprint(uv2)
     
-    create_tables()
+    #init_db()
+    drop_tables()
     return app

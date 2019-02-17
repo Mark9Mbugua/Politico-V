@@ -10,12 +10,11 @@ pv2 = Blueprint('ap4', __name__, url_prefix='/api/v2')
 @pv2.route('/parties', methods=['POST']) 
 def post_party():
     """route for creating a new political party"""
-    parties = PoliticalParties().get_all_parties()
     try:
         data = request.get_json()
         party_name = data['party_name']
         hqAddress = data['hqAddress']
-        logoUrl = data['logoUrl']        
+        logoUrl = data['logoUrl']
         party = PoliticalParties().create(party_name, hqAddress, logoUrl)
         response = Validators().party_data_validator(party_name, hqAddress)
         result = LogoUrlValidator().validate_logo_url(logoUrl)
@@ -41,7 +40,6 @@ def get_parties():
 @pv2.route('/parties/<int:party_id>', methods=['GET']) 
 def get_party(party_id):
     party = PoliticalParties().get_one_party(party_id)
-    
     if party:
        return Serializer.json_serializer('Political party retrieved successfully', party, 200), 200
     
@@ -70,8 +68,9 @@ def update_party(party_id):
 
 @pv2.route('/parties/<int:party_id>', methods=['DELETE'])
 def delete_party(party_id):
+    party = PoliticalParties().get_one_party(party_id)
     delete_party = PoliticalParties().delete_party(party_id)
-    if delete_party:
-        return Serializer.json_serializer('Political Party deleted successfully', None, 200), 200
+    if party:
+        return Serializer.json_serializer('Political Party deleted successfully', delete_party, 200), 200
     
     return Serializer.error_serializer('Political party cannot be found', 404), 404

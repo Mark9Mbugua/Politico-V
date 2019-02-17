@@ -17,7 +17,7 @@ class PoliticalParties():
     
     def serializer_two(self, party_details):
         party_id, party_name, hqAddress, logoUrl = party_details
-        result = dict(party_id = party_id, party_name = party_name, hqAddress = hqAddress, logoUrl = logoUrl)
+        result = dict(party_id=party_id, party_name=party_name, hqAddress=hqAddress, logoUrl=logoUrl)
         return result
 
     def create(self, party_name, hqAddress, logoUrl):
@@ -77,3 +77,4 @@ class PoliticalParties():
         cur.execute(query)
         self.db.commit()
         cur.close()
+        return None
