@@ -8,7 +8,7 @@ class PoliticalOffices():
     
     #serializes data into json object format
     def serializer(self, office):
-        office_fields = ('party_id', 'office_name', 'office_type')
+        office_fields = ('office_id', 'office_name', 'office_type')
         result = dict()
         for index, field in enumerate(office_fields):
             result[field] = office[index]

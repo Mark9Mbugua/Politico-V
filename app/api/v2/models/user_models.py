@@ -8,7 +8,14 @@ class User():
         self.db = init_db()
     
     def serializer(self, user):
-        user_fields = ('user_id', 'user_name', 'email', 'role', 'password')
+        user_fields = ('user_id', 'firstname','lastname', 'email', 'phone', 'password')
+        result = dict()
+        for index, field in enumerate(user_fields):
+            result[field] = user[index]
+        return result
+    
+    def login_serializer(self, user):
+        user_fields = ('user_id', 'email','password')
         result = dict()
         for index, field in enumerate(user_fields):
             result[field] = user[index]
@@ -33,20 +40,20 @@ class User():
                 VALUES (%s,%s,%s,%s,%s) RETURNING user_id"""
         content = (firstname, lastname, email, phone, password)
         cur.execute(query, content)
-        user_id = cur.fetchone()
+        user = cur.fetchone()
         self.db.commit()
         cur.close()
-        output = self.serializer(tuple(itertools.chain(user_id, content)))
-        return output
+        return self.serializer(tuple(itertools.chain(user, content)))
     
     def login(self, email, password):
         cur = self.db.cursor()
         cur.execute("""SELECT user_id, firstname, lastname, email, password FROM users WHERE email = %s""", (email, ))
         user= cur.fetchone()
         if cur.rowcount == 1: 
-            data = self.serializer(user)
-            if self.verify_hash(password, data["password"]) is True:  
+            data = self.login_serializer(user)
+            if self.generate_hash(password):  
                 return data
+                
 
     def userIsValid(self, email):
         cur = self.db.cursor()
