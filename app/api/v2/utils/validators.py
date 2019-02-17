@@ -31,26 +31,27 @@ class Validators:
         
         return response
 
-    def office_data_validator(self, office_type, name):
+    def office_data_validator(self, office_name, office_type):
         response = True
         if not isinstance(office_type, str):
             response = {'Error': 'Office type should be in string format', 'Status': 400}
-        if not isinstance(name, str):
+            
+        if not isinstance(office_name, str):
             response =  {'Error': 'Office name should be in string format', 'Status': 400}
         
-        if  office_type not in self.types_of_offices:
+        if office_type not in self.types_of_offices:
             response = {'Error': 'Office type must either be Legislative, Executive or County', 'Status': 400}
             
         if office_type == 'Legislative':
-            if name != 'Member of Parliament' and name != 'Women Rep' and name != 'Senator':
+            if office_name != 'Member of Parliament' and office_name != 'Women Rep' and office_name != 'Senator':
                 response = {'Error': 'Only a Senator, Member of Parliament or a Women Rep can occupy a legislative office', 'Status': 400} 
         
         if office_type == 'Executive':
-            if name != 'President' and name != 'Prime Minister':
+            if office_name != 'President' and office_name != 'Prime Minister':
                 response = {'Error': 'Only the President or the Prime Minister can occupy an executive office', 'Status': 400} 
 
         if office_type == 'County':
-            if name != 'Governor' and name != 'MCA':
+            if office_name != 'Governor' and office_name != 'MCA':
                 response = {'Error': 'Only a Governor or an MCA can occupy a county office', 'Status': 400} 
 
         return response 

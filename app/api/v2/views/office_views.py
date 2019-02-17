@@ -5,14 +5,13 @@ from app.api.v2.utils.serializer import Serializer
 
 ov2 = Blueprint('ap3', __name__, url_prefix='/api/v2')
 
-
 @ov2.route('/offices', methods=['POST'])
 def post_office():
     data = request.get_json()
     try:
         office_name = data["office_name"]
         office_type = data["office_type"]
-        office = PoliticalOffices().create(office_name, office_type)
+        office = PoliticalOffices().create_office(office_name, office_type)
         response = Validators().office_data_validator(office_name, office_type)
     except KeyError:
         return Serializer.error_serializer('One or more keys is missing', 400), 400

@@ -18,18 +18,19 @@ class PoliticalOffices():
         office_id, office_name, office_type = office_details
         result = dict(office_id = office_id, office_name = office_name, office_type = office_type)
         return result
-
-    def create(self, office_name, office_type):
+    
+    def create_office(self, office_name, office_type):
         cur = self.db.cursor()
         query = """INSERT INTO offices(office_name, office_type)
                 VALUES (%s,%s) RETURNING office_id"""
         content = (office_name, office_type)
         cur.execute(query, content)
-        office_id = cur.fetchone()
+        office = cur.fetchone()
         self.db.commit()
         cur.close()
-        return self.serializer(tuple(itertools.chain(office_id, content)))
-    
+        return self.serializer(tuple(itertools.chain(office, content)))
+
+
     def get_all_offices(self):
         cur = self.db.cursor()
         query = """SELECT office_id, office_name, office_type FROM offices"""
