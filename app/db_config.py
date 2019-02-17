@@ -1,8 +1,8 @@
 import psycopg2
 import os
 
-db_url = os.getenv('DATABASE_URL')
-test_db_url = os.getenv('TEST_DATABASE_URL')
+db_url = 'postgresql://postgres:1998@localhost:5432/politico_db'
+test_db_url = 'postgresql://postgres:1998@localhost:5432/test_politico_db'
 
 def connection(url):
     con = psycopg2.connect(url)

@@ -26,6 +26,6 @@ def create_app(config_name):
     from .api.v2.views.user_views import uv2
     app.register_blueprint(uv2)
     
-    init_db()
+    #init_db()
     drop_tables()
     return app

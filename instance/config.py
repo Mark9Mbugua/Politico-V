@@ -6,7 +6,7 @@ class Config:
     CSRF_ENABLED = True 
     SECRET = os.getenv('SECRET')
     DEBUG = True
-    DATABASE_URL = os.getenv('DATABASE_URL')
+    DATABASE_URL = 'postgresql://postgres:1998@localhost:5432/politico_db'
 
 class DevelopmentConfig(Config):
     """Configurations for Development."""
