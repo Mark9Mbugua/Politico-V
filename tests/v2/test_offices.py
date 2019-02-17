@@ -64,7 +64,6 @@ class TestOfficeRequestCase(TestElectionsCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('data' in result)
         self.assertIn('Legislative', str(result))
-    
 class TestBadRequestCase(TestElectionsCase):
     
     def test_office_less_keys(self):
