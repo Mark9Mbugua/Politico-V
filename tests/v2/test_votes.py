@@ -20,7 +20,7 @@ class TestNormalVoteCase(TestVoteCase):
 
     def test_cast_vote(self):
         """Test POST a voter Request"""
-        response = self.client.post('/api/v2/votes', data=json.dumps(self.vote), content_type='application/json')
+        response = self.client.post('/api/v2/vote', data=json.dumps(self.vote), content_type='application/json')
         result = json.loads(response.data)
         self.assertEqual(result['message'], "Vote has been cast successfully")
         self.assertEqual(response.status_code, 201)
