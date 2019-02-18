@@ -34,7 +34,8 @@ def drop_tables():
     parties = """DROP TABLE IF EXISTS parties CASCADE"""
     offices = """DROP TABLE IF EXISTS offices CASCADE"""
     users = """DROP TABLE IF EXISTS users CASCADE"""
-    queries = [parties, offices, users]
+    votes = """DROP TABLE IF EXISTS votes CASCADE"""
+    queries = [parties, offices, users, votes]
 
     for query in queries:
         cur.execute(query)
@@ -46,7 +47,8 @@ def drop_test_tables():
     parties = """DROP TABLE IF EXISTS parties CASCADE"""
     offices = """DROP TABLE IF EXISTS offices CASCADE"""
     users = """DROP TABLE IF EXISTS users CASCADE"""
-    queries = [parties, offices, users]
+    votes = """DROP TABLE IF EXISTS votes CASCADE"""
+    queries = [parties, offices, users, votes]
 
     for query in queries:
         cur.execute(query)
@@ -74,6 +76,14 @@ def tables():
             party_name VARCHAR(80) NOT NULL,
             logoUrl VARCHAR(80) NOT NULL,
             hqAddress VARCHAR(80) NOT NULL)"""
-    
-    queries = [users, offices, parties]
+
+    votes = """CREATE TABLE IF NOT EXISTS votes(
+            office_id SERIAL PRIMARY KEY NOT NULL,
+            office_name VARCHAR(80) NOT NULL,
+            candidate_id INTEGER NOT NULL UNIQUE,
+            cd_firstname VARCHAR(80) NOT NULL,
+            cd_lastname VARCHAR(80) NOT NULL,
+            voter_id INTEGER NOT NULL UNIQUE)"""
+
+    queries = [users, offices, parties, votes]
     return queries

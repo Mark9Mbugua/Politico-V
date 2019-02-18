@@ -10,9 +10,11 @@ office = {
 }
 
 vote = {
-    'office_id': '1',
-    'candidate_id': '1',
-    'voter_id': '1'
+    "office_name": "Governor",
+    "candidate_id": 1,
+    "cd_firstname": "Markize",
+    "cd_lastname": "Welar",
+    "voter_id": 1
 }
 
 party_less_keys = {
@@ -252,6 +254,7 @@ phone_not_ten_dig = {
 dummy_data = {
     'party': party,
     'office' : office,
+    'vote': vote,
     'user_sign_up': user_sign_up,
     'party_less_keys' : party_less_keys,
     'office_less_keys': office_less_keys,
