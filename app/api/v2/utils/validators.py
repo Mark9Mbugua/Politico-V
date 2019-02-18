@@ -60,23 +60,22 @@ class Validators:
         """ validates user password """
         response = True
         if len(password) < 5:
-            response = {'Error': 'Password should have at least 5 characters'}
-            return response
+            response = {'Error': 'Password should have at least 5 characters', 'Status': 400 }
         
         if not re.search('[A-Z]', password):
-            response = {'Error': 'Password should have atleast one capital letter', 'Status': 404}
+            response = {'Error': 'Password should have atleast one capital letter', 'Status': 400}
         
         if not re.search('[a-z]', password):
-            response = {'Error': 'Password should have atleast one lowercase letter', 'Status': 404}
+            response = {'Error': 'Password should have atleast one lowercase letter', 'Status': 400}
         
         if not re.search('[0-9]', password):
-            response = {'Error': 'Password should have atleast one number'}, 404
+            response = {'Error': 'Password should have atleast one number', 'Status': 400}
         
         if not all(x.isalpha() or x.isspace() for x in firstname):
-            response = {'Error': 'Username should only have letters and spaces', 'Status': 400}
+            response = {'Error': 'First name should only have letters and spaces', 'Status': 400}
         
-        if not all(x.isalpha() or x.isspace() for x in firstname):
-            response = {'Error': 'Username should only have letters and spaces', 'Status': 400}
+        if not all(x.isalpha() or x.isspace() for x in lastname):
+            response = {'Error': 'Last name should only have letters and spaces', 'Status': 400}
         
         if re.search('@', email) is None:
             response = {'Error': "Email should be in the format 'name@address.com'", 'Status': 400}
@@ -90,16 +89,15 @@ class Validators:
         if not isinstance(email, str):
             response = {'Error': 'Email should be in string format', 'Status': 400}
         
-        if len(email) < 7:
+        if len(email) < 9:
             response = {'Error': 'Email is too short', 'Status': 400}
         
         if not all(x.isdigit() for x in phone):
             response = {'Error': 'Phone number should have digits only', 'Status': 400}
         
-        if len(phone) < 8:
-            response = {'Error': 'Phone number should have at least 8 digits', 'Status': 400}
+        if len(phone) != 10:
+            response = {'Error': 'Phone number should have 10 digits', 'Status': 400}
 
-        
         return response
         
         
