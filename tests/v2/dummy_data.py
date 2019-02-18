@@ -9,6 +9,11 @@ office = {
     'office_name': "Member of Parliament"
 }
 
+vote = {
+    'office_id': '1',
+    'candidate_id': '1',
+    'voter_id': '1'
+}
 
 party_less_keys = {
     "party_name": "Jubilee",
@@ -149,9 +154,105 @@ county_mismatch_women_rep = {
     "office_name" : "Women Rep"
 }
 
+user_sign_up = {
+	"firstname": "Demba",
+	"lastname": "Basela",
+	"email": "dembaba@gmail.com",
+	"phone" : "0712340902",
+	"password" : "Macabee106"
+}
+
+user_less_keys = {
+    "firstname": "Demba",
+	"lastname": "Basela",
+	"email": "dembaba@gmail.com",
+	"phone" : "0712340902",
+}
+
+pwd_less_char = {
+    "firstname": "Demba",
+	"lastname": "Basela",
+	"email": "dembaba@gmail.com",
+	"phone" : "0712340902",
+	"password" : "Mac1"
+}
+
+pwd_no_caps = {
+    "firstname": "Demba",
+	"lastname": "Basela",
+	"email": "dembaba@gmail.com",
+	"phone" : "0712340902",
+	"password" : "markize106"
+}
+
+pwd_all_caps = {
+    "firstname": "Demba",
+	"lastname": "Basela",
+	"email": "dembaba@gmail.com",
+	"phone" : "0712340902",
+	"password" : "MARKIZE106"
+}
+
+pwd_no_digit = {
+    "firstname": "Demba",
+	"lastname": "Basela",
+	"email": "dembaba@gmail.com",
+	"phone" : "0712340902",
+	"password" : "Markizeman"
+}
+
+firstname_all_char = {
+    "firstname": "De*7#@",
+	"lastname": "Basela",
+	"email": "dembaba@gmail.com",
+	"phone" : "0712340902",
+	"password" : "Markize106"
+}
+
+lastname_all_char = {
+    "firstname": "Demba",
+	"lastname": "Bas*7#@",
+	"email": "dembaba@gmail.com",
+	"phone" : "0712340902",
+	"password" : "Markize106"
+}
+
+bad_email = {
+    "firstname": "Demba",
+	"lastname": "Basela",
+	"email": "dembabagmail.com",
+	"phone" : "0712340902",
+	"password" : "Markize106"
+}
+
+short_email = {
+    "firstname": "Demba",
+	"lastname": "Basela",
+	"email": "d@g.com",
+	"phone" : "0712340902",
+	"password" : "Markize106"
+}
+
+bad_phone = {
+    "firstname": "Demba",
+	"lastname": "Basela",
+	"email": "dembaba@gmail.com",
+	"phone" : "071234090i",
+	"password" : "Markize106"
+}
+
+phone_not_ten_dig = {
+    "firstname": "Demba",
+	"lastname": "Basela",
+	"email": "dembaba@gmail.com",
+	"phone" : "07123409080908",
+	"password" : "Markize106"
+}
+
 dummy_data = {
     'party': party,
     'office' : office,
+    'user_sign_up': user_sign_up,
     'party_less_keys' : party_less_keys,
     'office_less_keys': office_less_keys,
     'hq_add_not_spaces_int_str' : hq_add_not_spaces_int_str,
@@ -178,6 +279,17 @@ dummy_data = {
     'county_mismatch_senator' : county_mismatch_senator,
     'county_mismatch_mp' : county_mismatch_mp,
     'county_mismatch_women_rep' : county_mismatch_women_rep,
-    'party_name_not_purely_alpha_and_space' : party_name_not_purely_alpha_and_space
-    
+    'party_name_not_purely_alpha_and_space' : party_name_not_purely_alpha_and_space,
+    'user_sign_up' : user_sign_up,
+    'user_less_keys' : user_less_keys,
+    'pwd_less_char' : pwd_less_char,
+    'pwd_no_caps': pwd_no_caps,
+    'pwd_all_caps': pwd_all_caps,
+    'pwd_no_digit': pwd_no_digit,
+    'firstname_all_char': firstname_all_char,
+    'lastname_all_char': lastname_all_char,
+    'bad_email': bad_email,
+    'short_email': short_email,
+    'bad_phone': bad_phone,
+    'phone_not_ten_dig': phone_not_ten_dig,
 }
