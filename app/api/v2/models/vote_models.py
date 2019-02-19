@@ -27,7 +27,7 @@ class Vote():
 
     def has_voted(self,office_id, voter_id):
         cur = self.db.cursor()
-        query = """SELECT * FROM votes WHERE office = %s and voter = %s""".format(office_id, voter)
+        query = """SELECT * FROM votes WHERE office = %s and voter = %s""".format(office_id, voter_id)
         content = (office_id, voter_id)
         cur.exectute(query, content)
         vote_cast = cur.fetchone()
