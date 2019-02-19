@@ -26,4 +26,8 @@ def vote():
         return Serializer.json_serializer('You successfully cast your vote',response, 201), 201
     return Serializer.error_serializer('Candidate not registered', 400), 400
 
-    
+
+@vv2.route('/office/<int:office_id>/result', methods=['POST']) 
+def get_results(office_id):
+    results = Vote().results_per_office(office_id)
+    return Serializer.json_serializer("Election results retrieved successfully", results, 200), 200
