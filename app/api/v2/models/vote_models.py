@@ -32,3 +32,22 @@ class Vote():
         cur.exectute(query, content)
         vote_cast = cur.fetchone()
         return vote_cast[0]
+    
+    def results_per_office(self, office_id):
+        cur = self.db.cursor()
+        query = """SELECT candidate, COUNT (vote_id) FROM votes WHERE office = %s GROUP BY candidate """
+        cur.execute(query, office_id)
+        votes = cur.fetchall()
+
+        results =[]
+        keys = ('office', 'candidate', 'result')
+
+        if votes:
+            for vote in votes:
+                vote = (office_id, ) + vote
+                result = dict(zip(keys, vote))
+                results.append(result)
+        
+        return results
+
+        
