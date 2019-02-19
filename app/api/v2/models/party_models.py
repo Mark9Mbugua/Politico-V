@@ -31,6 +31,15 @@ class PoliticalParties():
         cur.close()
         return self.serializer(tuple(itertools.chain(party_id, content)))
     
+    def check_party_exists(self, party_id):
+        cur = self.db.cursor()
+        cur.execute("""SELECT party_id WHERE party_id= %s""", (party_id, ))
+        data = cur.fetchall()
+        for party in data:
+            if party[0] == party_id:
+                return True
+            return False
+    
     def get_all_parties(self):
         cur = self.db.cursor()
         query = """SELECT party_id, party_name, hqAddress, logoUrl FROM parties"""

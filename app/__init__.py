@@ -29,6 +29,6 @@ def create_app(config_name):
     from .api.v2.views.vote_views import vv2
     app.register_blueprint(vv2)
     
-    #init_db()
-    drop_tables()
+    init_db()
+    #drop_tables()
     return app
