@@ -10,14 +10,12 @@ def vote():
     """Route for casting a vote"""
     try:
         data = request.get_json()
-        office_name = data['office_name']
-        candidate_id = data['candidate_id']
-        cd_firstname = data['cd_firstname']
-        cd_lastname = data['cd_lastname']
+        office_id = data['office_id']
         voter_id = data['voter_id']
+        candidate_id = data['candidate_id']   
 
     except KeyError:
         return Serializer.error_serializer('One or more keys is missing', 400), 400
 
-    new_vote = Vote().cast_vote(office_name, candidate_id, cd_firstname, cd_lastname, voter_id)
+    new_vote = Vote().cast_vote(office_id, voter_id, candidate_id)
     return Serializer.json_serializer("Vote has been cast successfully", new_vote, 201), 201
