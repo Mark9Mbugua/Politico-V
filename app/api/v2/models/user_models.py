@@ -104,11 +104,10 @@ class Candidate(User):
         cur.close()
         return self.candidate_serializer(tuple(itertools.chain(user, content)))
 
-    def check_candidate_registered(self, candidate):
+    def check_candidate_registered(self, candidate, office):
         cur = self.db.cursor()
-        cur.execute( """SELECT candidate FROM candidates WHERE candidate = %s""", (candidate, ))
-        candidate = cur.fetchone()[0]
-        if candidate:
-            return True
+        cur.execute( """SELECT * FROM candidates WHERE candidate = %s and office = %s""", (candidate, office))
+        candidate = cur.fetchone()
+        return candidate
 
 
