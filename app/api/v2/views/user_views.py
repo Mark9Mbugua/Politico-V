@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request, make_response, Blueprint
-from app.api.v2.models.user_models import User
+from app.api.v2.models.user_models import User, Candidate
+from app.api.v2.models.party_models import PoliticalParties
+from app.api.v2.models.office_models import PoliticalOffices
 from app.api.v2.utils.validators import Validators
 from app.api.v2.utils.serializer import Serializer
 from flask_jwt_extended import create_access_token
@@ -47,3 +49,25 @@ def login():
         return Serializer.error_serializer('Enter correct password', 400), 400
     
     return Serializer.error_serializer('User is not registered', 400), 400
+
+@uv2.route('/office/<int:office_id>/register', methods=['POST'])
+def post_candidate(office_id):
+    """ Route for registering a candidate"""
+    try:
+        data = request.get_json()
+        office = data['office']
+        email = data['email']
+        party = data['party']
+        candidate = data['candidate']
+        
+    except KeyError:
+        return Serializer.error_serializer('One or more keys is missing', 400), 400
+    
+    if User().userIsValid(email) == False:
+        return Serializer.error_serializer('User must be valid', 400), 400
+    
+    if PoliticalOffices().check_office_exists(office) == False:
+        return Serializer.error_serializer('Office must be valid', 400), 400
+    
+    candidate = Candidate().register_candidate(office, party, email, candidate)
+    return Serializer.json_serializer('Candidate successfully registered', candidate, 200), 200

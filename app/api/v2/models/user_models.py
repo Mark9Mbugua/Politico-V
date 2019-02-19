@@ -1,6 +1,9 @@
 from app.db_config import init_db
+from .party_models import PoliticalParties
+from .office_models import PoliticalOffices
 import itertools
 from passlib.hash import pbkdf2_sha256 as sha256
+from app.api.v2.utils.serializer import Serializer
 
 
 class User():
@@ -16,6 +19,13 @@ class User():
     
     def login_serializer(self, user):
         user_fields = ('user_id', 'email','password')
+        result = dict()
+        for index, field in enumerate(user_fields):
+            result[field] = user[index]
+        return result
+    
+    def candidate_serializer(self, user):
+        user_fields = ('office', 'candidate', 'email')
         result = dict()
         for index, field in enumerate(user_fields):
             result[field] = user[index]
@@ -44,6 +54,7 @@ class User():
         self.db.commit()
         cur.close()
         return self.serializer(tuple(itertools.chain(user, content)))
+
     
     def login(self, email, password):
         cur = self.db.cursor()
@@ -71,12 +82,33 @@ class User():
         passcode = self.serializer_two(data)
         if self.verify_hash(password, passcode["pwd"]) is  True:
             return True
-
+    
     @staticmethod
     def generate_hash(password):
         return sha256.hash(password)
-    
+
     @staticmethod
     def verify_hash(password, hash):
         """returns True if password has been hashed"""
         return sha256.verify(password, hash)
+
+class Candidate(User):
+    def register_candidate(self, office, party, email, candidate):
+        cur = self.db.cursor()
+        query = """INSERT INTO candidates(office, party, email, candidate)
+                VALUES (%s,%s,%s, %s) RETURNING office, party, email, candidate"""
+        content = (office, party, email, candidate)
+        cur.execute(query, content)
+        user = cur.fetchone()
+        self.db.commit()
+        cur.close()
+        return self.candidate_serializer(tuple(itertools.chain(user, content)))
+
+    def check_candidate_registered(self, candidate):
+        cur = self.db.cursor()
+        cur.execute( """SELECT candidate FROM candidates WHERE candidate = %s""", (candidate, ))
+        candidate = cur.fetchone()[0]
+        if candidate:
+            return True
+
+

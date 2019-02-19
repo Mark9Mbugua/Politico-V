@@ -30,6 +30,15 @@ class PoliticalOffices():
         cur.close()
         return self.serializer(tuple(itertools.chain(office, content)))
 
+    def check_office_exists(self, office_id):
+        cur = self.db.cursor()
+        cur.execute("""SELECT office_id, office_name, office_type FROM offices WHERE office_id= %s""", (office_id, ))
+        data = cur.fetchall()
+        for office in data:
+            if office[0] == office_id:
+                return True
+            return False
+
 
     def get_all_offices(self):
         cur = self.db.cursor()

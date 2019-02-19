@@ -35,7 +35,8 @@ def drop_tables():
     offices = """DROP TABLE IF EXISTS offices CASCADE"""
     users = """DROP TABLE IF EXISTS users CASCADE"""
     votes = """DROP TABLE IF EXISTS votes CASCADE"""
-    queries = [parties, offices, users, votes]
+    candidates = """DROP TABLE IF EXISTS votes CASCADE"""
+    queries = [parties, offices, users, candidates, votes]
 
     for query in queries:
         cur.execute(query)
@@ -48,7 +49,8 @@ def drop_test_tables():
     offices = """DROP TABLE IF EXISTS offices CASCADE"""
     users = """DROP TABLE IF EXISTS users CASCADE"""
     votes = """DROP TABLE IF EXISTS votes CASCADE"""
-    queries = [parties, offices, users, votes]
+    candidates = """DROP TABLE IF EXISTS votes CASCADE"""
+    queries = [parties, offices, users, candidates, votes]
 
     for query in queries:
         cur.execute(query)
@@ -56,34 +58,39 @@ def drop_test_tables():
 
 def tables():
     
-    users = """CREATE TABLE IF NOT EXISTS users(
-            user_id SERIAL PRIMARY KEY NOT NULL,
-            firstname VARCHAR(80) NOT NULL,
-            lastname VARCHAR(80) NOT NULL,
-            email VARCHAR(80) NOT NULL UNIQUE,
-            phone INTEGER NOT NULL UNIQUE,
-            password VARCHAR NOT NULL,
-            role VARCHAR(80) NOT NULL DEFAULT 'User',
-            date_created timestamp with time zone DEFAULT ('now'::text)::date)"""
+        users = """CREATE TABLE IF NOT EXISTS users(
+                user_id SERIAL PRIMARY KEY NOT NULL,
+                firstname VARCHAR(80) NOT NULL,
+                lastname VARCHAR(80) NOT NULL,
+                email VARCHAR(100) NOT NULL,
+                phone INTEGER NOT NULL UNIQUE,
+                password VARCHAR NOT NULL,
+                role VARCHAR(80) NOT NULL DEFAULT 'User',
+                date_created timestamp with time zone DEFAULT ('now'::text)::date)"""
 
-    offices = """CREATE TABLE IF NOT EXISTS offices (
-            office_id SERIAL PRIMARY KEY NOT NULL,
-            office_name VARCHAR(80) NOT NULL,
-            office_type VARCHAR(80) NOT NULL)"""
+        offices = """CREATE TABLE IF NOT EXISTS offices (
+                office_id SERIAL PRIMARY KEY NOT NULL,
+                office_name VARCHAR(80) NOT NULL,
+                office_type VARCHAR(80) NOT NULL)"""
 
-    parties = """CREATE TABLE IF NOT EXISTS parties (
-            party_id SERIAL PRIMARY KEY NOT NULL,
-            party_name VARCHAR(80) NOT NULL,
-            logoUrl VARCHAR(80) NOT NULL,
-            hqAddress VARCHAR(80) NOT NULL)"""
+        parties = """CREATE TABLE IF NOT EXISTS parties (
+                party_id SERIAL PRIMARY KEY NOT NULL,
+                party_name VARCHAR(80) NOT NULL,
+                logoUrl VARCHAR(80) NOT NULL,
+                hqAddress VARCHAR(80) NOT NULL)"""
 
-    votes = """CREATE TABLE IF NOT EXISTS votes(
-            office_id SERIAL PRIMARY KEY NOT NULL,
-            office_name VARCHAR(80) NOT NULL,
-            candidate_id INTEGER NOT NULL UNIQUE,
-            cd_firstname VARCHAR(80) NOT NULL,
-            cd_lastname VARCHAR(80) NOT NULL,
-            voter_id INTEGER NOT NULL UNIQUE)"""
+        candidates = """CREATE TABLE IF NOT EXISTS candidates(
+                candidate INTEGER NOT NULL,
+                office INTEGER NOT NULL,
+                party INTEGER NOT NULL,
+                email VARCHAR(100) NOT NULL,
+                PRIMARY KEY (candidate, office))"""
 
-    queries = [users, offices, parties, votes]
-    return queries
+        votes = """CREATE TABLE IF NOT EXISTS votes(
+                office INTEGER NOT NULL,
+                candidate INTEGER NOT NULL,
+                voter INTEGER NOT NULL,
+                PRIMARY KEY (office, voter))"""
+
+        queries = [users, offices, parties, candidates, votes]
+        return queries
