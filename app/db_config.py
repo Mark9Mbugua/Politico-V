@@ -87,10 +87,11 @@ def tables():
                 PRIMARY KEY (candidate, office))"""
 
         votes = """CREATE TABLE IF NOT EXISTS votes(
+                vote_id SERIAL NOT NULL,
                 office INTEGER NOT NULL,
-                candidate INTEGER NOT NULL,
                 voter INTEGER NOT NULL,
-                PRIMARY KEY (office, voter))"""
+                candidate INTEGER NOT NULL,
+                PRIMARY KEY (voter, office))"""
 
         queries = [users, offices, parties, candidates, votes]
         return queries
