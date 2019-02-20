@@ -33,7 +33,7 @@ class PoliticalParties():
     
     def check_party_exists(self, party_id):
         cur = self.db.cursor()
-        cur.execute("""SELECT party_id WHERE party_id= %s""", (party_id, ))
+        cur.execute("""SELECT party_id from parties WHERE party_id= %s""", (party_id, ))
         data = cur.fetchall()
         for party in data:
             if party[0] == party_id:

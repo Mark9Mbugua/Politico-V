@@ -63,11 +63,17 @@ def post_candidate(office_id):
     except KeyError:
         return Serializer.error_serializer('One or more keys is missing', 400), 400
     
-    if User().userIsValid(email) == False:
-        return Serializer.error_serializer('User must be valid', 400), 400
-    
-    if PoliticalOffices().check_office_exists(office) == False:
-        return Serializer.error_serializer('Office must be valid', 400), 400
-    
-    candidate = Candidate().register_candidate(office, party, email, candidate)
-    return Serializer.json_serializer('Candidate successfully registered', candidate, 200), 200
+    if Candidate().check_candidate_registered(candidate, office):
+        return Serializer.error_serializer('Office does not exist', 400), 400
+
+    if PoliticalOffices().check_office_exists(office) == True:
+
+        if PoliticalParties().check_party_exists(party) == True:
+
+            candidate = Candidate().register_candidate(office, party, email, candidate)
+
+            return Serializer.json_serializer('Candidate successfully registered', candidate, 200), 200
+
+        return Serializer.error_serializer('Party does not exist', 400), 400
+
+    return Serializer.error_serializer('Office does not exist', 400), 400

@@ -94,15 +94,20 @@ class User():
 
 class Candidate(User):
     def register_candidate(self, office, party, email, candidate):
-        cur = self.db.cursor()
-        query = """INSERT INTO candidates(office, party, email, candidate)
-                VALUES (%s,%s,%s, %s) RETURNING office, party, email, candidate"""
-        content = (office, party, email, candidate)
-        cur.execute(query, content)
-        user = cur.fetchone()
-        self.db.commit()
-        cur.close()
-        return self.candidate_serializer(tuple(itertools.chain(user, content)))
+        if self.userIsValid(email) == True:
+            try:
+                cur = self.db.cursor()
+                query = """INSERT INTO candidates(office, party, email, candidate)
+                        VALUES (%s,%s,%s, %s) RETURNING office, party, email, candidate"""
+                content = (office, party, email, candidate)
+                cur.execute(query, content)
+                user = cur.fetchone()
+                self.db.commit()
+                cur.close()
+                return self.candidate_serializer(tuple(itertools.chain(user, content)))
+            except Exception as error:
+                print(error)
+        raise Exception('A candidate must be a registered user first')
 
     def check_candidate_registered(self, candidate, office):
         cur = self.db.cursor()
