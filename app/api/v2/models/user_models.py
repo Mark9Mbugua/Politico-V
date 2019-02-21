@@ -11,14 +11,7 @@ class User():
         self.db = init_db()
     
     def serializer(self, user):
-        user_fields = ('user_id', 'firstname','lastname', 'email', 'phone', 'password')
-        result = dict()
-        for index, field in enumerate(user_fields):
-            result[field] = user[index]
-        return result
-    
-    def login_serializer(self, user):
-        user_fields = ('user_id', 'email','password')
+        user_fields = ('user_id', 'firstname','lastname', 'email', 'phone', 'password', 'role')
         result = dict()
         for index, field in enumerate(user_fields):
             result[field] = user[index]
@@ -43,26 +36,25 @@ class User():
 
         return result
     
-    def register(self, firstname, lastname, email, phone, password):
+    def register(self, firstname, lastname, email, phone, password, role):
         """Create a user account"""
         cur = self.db.cursor()
-        query = """INSERT INTO users(firstname, lastname, email, phone, password)
-                VALUES (%s,%s,%s,%s,%s) RETURNING user_id"""
-        content = (firstname, lastname, email, phone, password)
+        query = """INSERT INTO users(firstname, lastname, email, phone, password, role)
+                VALUES (%s,%s,%s,%s,%s,%s) RETURNING user_id"""
+        content = (firstname, lastname, email, phone, password, role)
         cur.execute(query, content)
         user = cur.fetchone()
         self.db.commit()
-        cur.close()
+        cur.close() 
         return self.serializer(tuple(itertools.chain(user, content)))
-
     
     def login(self, email, password):
         cur = self.db.cursor()
-        cur.execute("""SELECT user_id, firstname, lastname, email, password FROM users WHERE email = %s""", (email, ))
+        cur.execute("""SELECT user_id, firstname, lastname, email, password, phone, role FROM users WHERE email = %s""", (email, ))
         user= cur.fetchone()
         if cur.rowcount == 1: 
-            data = self.login_serializer(user)
-            if self.generate_hash(password):  
+            data = self.serializer(user)
+            if self.generate_hash(password):
                 return data
                 
 
