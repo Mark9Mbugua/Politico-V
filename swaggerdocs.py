@@ -189,7 +189,6 @@ def create_parties():
         description: BAD REQUEST
     """
 
-
 @app.route('/api/v2/parties', methods=['GET'])
 def get_all_parties():
     """ Get all parties endpoint.
