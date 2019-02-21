@@ -9,6 +9,7 @@ vv2 = Blueprint('vp1', __name__, url_prefix='/api/v2')
 
 
 @vv2.route('/vote', methods=['POST']) 
+@jwt_required
 def vote():
     """Route for casting a vote"""
     current_user = get_jwt_identity()
