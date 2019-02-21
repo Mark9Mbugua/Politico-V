@@ -38,5 +38,6 @@ def vote():
 
 @vv2.route('/office/<int:office_id>/result', methods=['GET'])
 def get_results(office_id):
+    """Get election results"""
     results = Vote().results_per_office(office_id)
     return Serializer.json_serializer("Election results retrieved successfully", results, 200), 200
