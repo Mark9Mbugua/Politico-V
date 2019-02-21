@@ -24,6 +24,8 @@ class StagingConfig(Config):
 
 class ProductionConfig(Config):
     """Configurations for Production."""
+    DATABASE_URL = 'postgres://wxdaktrvhevvma:58c93ca91945a567e020f8ef8240d8668aa945ff255537f961d97059ce25d3bf@ec2-23-21-165-188.compute-1.amazonaws.com:5432/daulhq4hucu8ip'
+
     DEBUG = False
     TESTING = False
 

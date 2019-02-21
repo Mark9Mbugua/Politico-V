@@ -9,6 +9,7 @@ vv2 = Blueprint('vp1', __name__, url_prefix='/api/v2')
 
 
 @vv2.route('/vote', methods=['POST']) 
+@jwt_required
 def vote():
     """Route for casting a vote"""
     current_user = get_jwt_identity()
@@ -38,5 +39,6 @@ def vote():
 
 @vv2.route('/office/<int:office_id>/result', methods=['GET'])
 def get_results(office_id):
+    """Get election results"""
     results = Vote().results_per_office(office_id)
     return Serializer.json_serializer("Election results retrieved successfully", results, 200), 200

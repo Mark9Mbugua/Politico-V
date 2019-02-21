@@ -3,7 +3,9 @@ import os
 from passlib.hash import pbkdf2_sha256 as sha256
 
 db_url = 'postgresql://postgres:1998@localhost:5432/politico_db'
+prod_db_url = 'postgres://wxdaktrvhevvma:58c93ca91945a567e020f8ef8240d8668aa945ff255537f961d97059ce25d3bf@ec2-23-21-165-188.compute-1.amazonaws.com:5432/daulhq4hucu8ip'
 test_db_url = 'postgresql://postgres:1998@localhost:5432/test_politico_db'
+
 
 def connection(url):
     con = psycopg2.connect(url)
@@ -12,6 +14,16 @@ def connection(url):
 def init_db():
     """establish db connection and create tables"""
     con = connection(db_url)
+    cur = con.cursor()
+    queries = tables()
+    for query in queries:
+        cur.execute(query)
+    con.commit()
+    return con
+
+def init_prod_db():
+    """establish db connection and create tables"""
+    con = connection(prod_db_url)
     cur = con.cursor()
     queries = tables()
     for query in queries:
