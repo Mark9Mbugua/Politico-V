@@ -3,7 +3,7 @@ from instance.config import app_config
 from .db_config import init_db, drop_tables, create_admin
 from flask_jwt_extended import JWTManager
 
-def create_app(config_name):
+def create_app("production"):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
