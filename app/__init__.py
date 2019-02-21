@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, request, jsonify
 from instance.config import app_config
-from .db_config import init_db, drop_tables, create_admin
+from .db_config import init_db, drop_tables, create_admin, init_prod_db
 from flask_jwt_extended import JWTManager
 
 def create_app(config_name):
@@ -29,7 +29,7 @@ def create_app(config_name):
     from .api.v2.views.vote_views import vv2
     app.register_blueprint(vv2)
     
-    init_db()
+    init_prod_db()
     create_admin()
     #drop_tables()
     return app
