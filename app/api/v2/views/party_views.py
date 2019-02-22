@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, make_response, Blueprint
 from app.api.v2.models.party_models import PoliticalParties
+from app.api.v2.models.user_models import User
 from app.api.v2.utils.validators import Validators
 from app.api.v2.utils.logo_validator import LogoUrlValidator
 from app.api.v2.utils.serializer import Serializer
@@ -12,7 +13,7 @@ pv2 = Blueprint('ap4', __name__, url_prefix='/api/v2')
 @jwt_required 
 def post_party():
     current_user = get_jwt_identity()
-    if current_user["role"] == 'Admin':
+    if current_user['username'] == "admin":
         """route for creating a new political party"""
         try:
             data = request.get_json()
@@ -24,17 +25,18 @@ def post_party():
             result = LogoUrlValidator().validate_logo_url(logoUrl)
         except KeyError:
             return Serializer.error_serializer('One or more keys is missing', 400), 400
-        
+
         if response == True:
             if result == True:
                 return Serializer.json_serializer('Political party created successfully', party, 201), 201
             return make_response(jsonify(result), 400)
         
-        return make_response(jsonify(response), 400)
+        return make_response(jsonify(response), 400)      
 
     return Serializer.error_serializer('User not authorized to make this request', 401), 401
 
 @pv2.route('/parties', methods=['GET'])
+@jwt_required
 def get_parties():
     parties = PoliticalParties().get_all_parties()
     if parties:
@@ -43,7 +45,7 @@ def get_parties():
     return Serializer.error_serializer('Political parties cannot be found', 404), 404
 
 @pv2.route('/parties/<int:party_id>', methods=['GET'])
-
+@jwt_required
 def get_party(party_id):
     party = PoliticalParties().get_one_party(party_id)
     if party:
@@ -56,7 +58,7 @@ def get_party(party_id):
 @jwt_required
 def update_party(party_id):
     current_user = get_jwt_identity()
-    if current_user["role"] == 'Admin':
+    if current_user ['username'] == "admin":
         try:
             data = request.get_json()
             party_name = data['party_name']
@@ -82,7 +84,7 @@ def update_party(party_id):
 @jwt_required
 def delete_party(party_id):
     current_user = get_jwt_identity()
-    if current_user["role"] == 'Admin':
+    if current_user ['username'] == "admin":
         party = PoliticalParties().get_one_party(party_id)
         delete_party = PoliticalParties().delete_party(party_id)
         if party:

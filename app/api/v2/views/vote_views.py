@@ -12,8 +12,7 @@ vv2 = Blueprint('vp1', __name__, url_prefix='/api/v2')
 @jwt_required
 def vote():
     """Route for casting a vote"""
-    current_user = get_jwt_identity()
-    if current_user["role"] == 'User':   
+    if User().admin_is_me(get_jwt_identity()):   
         try:
             data = request.get_json()
             office_id = data['office_id']
@@ -38,6 +37,7 @@ def vote():
 
 
 @vv2.route('/office/<int:office_id>/result', methods=['GET'])
+@jwt_required
 def get_results(office_id):
     """Get election results"""
     results = Vote().results_per_office(office_id)
