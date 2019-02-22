@@ -1,5 +1,6 @@
 from flask import Flask, jsonify,request, Blueprint, make_response
 from app.api.v2.models.office_models import PoliticalOffices
+from app.api.v2.models.user_models import User
 from app.api.v2.utils.validators import Validators
 from app.api.v2.utils.serializer import Serializer
 from flask_jwt_extended import get_jwt_identity, jwt_required
@@ -10,7 +11,7 @@ ov2 = Blueprint('ap3', __name__, url_prefix='/api/v2')
 @jwt_required
 def post_office():
     current_user = get_jwt_identity()
-    if current_user["role"] == 'Admin':
+    if current_user ['username'] == "admin":
         data = request.get_json()
         try:
             office_name = data["office_name"]
@@ -29,6 +30,7 @@ def post_office():
     return Serializer.error_serializer('User not authorized to make this request', 401), 401
 
 @ov2.route('/offices', methods=['GET'])
+@jwt_required
 def get_all_offices():
     offices = PoliticalOffices().get_all_offices()
     if offices:     
@@ -37,6 +39,7 @@ def get_all_offices():
     return Serializer.error_serializer('Political office cannot be found', 404), 404
 
 @ov2.route('/offices/<int:office_id>', methods=['GET'])
+@jwt_required
 def get_office(office_id):
     office = PoliticalOffices().get_one_office(office_id)
     if office:

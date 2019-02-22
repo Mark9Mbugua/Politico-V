@@ -17,17 +17,20 @@ def post_user():
         email = data['email']
         firstname = data['firstname']
         lastname = data['lastname']
+        username = data['username']
         phone = data['phone']
         password = data['password']
-        role = data['role']
 
         response = Validators().user_sign_up_validator(firstname, lastname, email, phone, password)
     except KeyError:
         return Serializer.error_serializer('One or more keys is missing', 400), 400
+    
+    if User().userIsValid(username) == True:
+        return Serializer.error_serializer('user already exists', 400), 400
 
     if response == True:
         password = User().generate_hash(password)
-        new_user = User().register(firstname, lastname, email, phone, password, role)
+        new_user = User().register(firstname, lastname, username, email, phone, password)
         return Serializer.json_serializer('User signed up successfully', new_user, 201), 201
     return make_response(jsonify(response), 400)
 
@@ -36,23 +39,28 @@ def login():
     """ Route for signing in a user"""
     try:
         data = request.get_json()
-        email = data['email']
+        username = data['username']
         password = data['password']
     except KeyError:
         return Serializer.error_serializer('One or more keys is missing', 400), 400
 
-    if User().userIsValid(email) == True:
-        if User().password_is_valid(email, password) == True:
-            user = User().login(email, password)
+    if User().userIsValid(username) == True:
+        if User().password_is_valid(username, password) == True:
+            user = User().login(username, password)
             access_token = create_access_token(identity = user)
-            return Serializer.json_serializer('You are now logged in', access_token, 200), 200
+
+            if access_token:
+                return Serializer.json_serializer('You are now logged in', access_token, 200), 200
             
         return Serializer.error_serializer('Enter correct password', 400), 400
     
     return Serializer.error_serializer('User is not registered', 400), 400
 
 @uv2.route('/office/<int:office_id>/register', methods=['POST'])
-def post_candidate(office_id): 
+@jwt_required
+def post_candidate(office_id):
+    current_user = get_jwt_identity()
+    if current_user ['username'] == "admin": 
         """ Route for registering a candidate"""
         try:
             data = request.get_json()
@@ -78,4 +86,6 @@ def post_candidate(office_id):
             return Serializer.error_serializer('Party does not exist', 400), 400
 
         return Serializer.error_serializer('Office does not exist', 400), 400
+
+    return Serializer.error_serializer('User not authorized to make this request', 401), 401
     

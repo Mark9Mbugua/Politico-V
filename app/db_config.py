@@ -75,10 +75,11 @@ def tables():
                 user_id SERIAL PRIMARY KEY NOT NULL,
                 firstname VARCHAR(80) NOT NULL,
                 lastname VARCHAR(80) NOT NULL,
+                username VARCHAR(80) NOT NULL,
                 email VARCHAR(100) NOT NULL,
                 phone INTEGER NOT NULL,
                 password VARCHAR NOT NULL,
-                role VARCHAR NOT NULL,
+                is_admin BOOLEAN DEFAULT FALSE,
                 date_created timestamp with time zone DEFAULT ('now'::text)::date)"""
 
         offices = """CREATE TABLE IF NOT EXISTS offices (
@@ -108,16 +109,3 @@ def tables():
 
         queries = [users, offices, parties, candidates, votes]
         return queries
-
-@staticmethod
-def generate_hash(password):
-        return sha256.hash(password)
-
-def create_admin():
-        query = """INSERT INTO users(firstname, lastname, email, phone, password, role)\
-        VALUES('Mark', 'Mbugua', 'mbugua@admin.com', '0724943143', 'Macaffy106', 'Admin')"""
-        con = connection(db_url)
-        cur = con.cursor()
-        cur.execute(query)
-        con.commit()
-        cur.close()
