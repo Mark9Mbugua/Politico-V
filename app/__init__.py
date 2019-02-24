@@ -30,6 +30,6 @@ def create_app(config_name):
     app.register_blueprint(vv2)
     
     #init_prod_db()
-    #init_db()
-    drop_tables()
+    init_db()
+    #drop_tables()
     return app

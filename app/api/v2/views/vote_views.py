@@ -12,7 +12,8 @@ vv2 = Blueprint('vp1', __name__, url_prefix='/api/v2')
 @jwt_required
 def vote():
     """Route for casting a vote"""
-    if User().admin_is_me(get_jwt_identity()):   
+    current_user = get_jwt_identity()
+    if current_user['username'] != "admin":  
         try:
             data = request.get_json()
             office_id = data['office_id']

@@ -94,10 +94,10 @@ def tables():
                 hqAddress VARCHAR(80) NOT NULL)"""
 
         candidates = """CREATE TABLE IF NOT EXISTS candidates(
-                candidate INTEGER NOT NULL,
+                candidate SERIAL NOT NULL,
                 office INTEGER NOT NULL,
                 party INTEGER NOT NULL,
-                email VARCHAR(100) NOT NULL,
+                username VARCHAR(80) NOT NULL,
                 PRIMARY KEY (candidate, office))"""
 
         votes = """CREATE TABLE IF NOT EXISTS votes(

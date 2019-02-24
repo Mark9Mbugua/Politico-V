@@ -31,13 +31,11 @@ class PoliticalParties():
         cur.close()
         return self.serializer(tuple(itertools.chain(party_id, content)))
     
-    def check_party_exists(self, party_name):
+    def check_party_exists(self, party_id):
         cur = self.db.cursor()
-        cur.execute("""SELECT party_name, hqAddress, logoUrl from parties WHERE party_name= '{}'""".format(party_name))
-        data = cur.fetchall()
-        for col in data:
-            if col[0] == party_name:
-                return True
+        cur.execute("""SELECT * FROM parties WHERE party_id= '{}'""".format(party_id))
+        party = cur.fetchall()
+        return party
 
     
     def get_all_parties(self):
