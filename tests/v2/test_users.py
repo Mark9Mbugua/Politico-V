@@ -14,7 +14,10 @@ class TestUserCase(unittest.TestCase):
         self.client = self.app.test_client()
         with self.app.app_context():
             init_test_db()
+        self.admin_sign_up = dummy_data['admin_sign_up']
         self.user_sign_up = dummy_data['user_sign_up']
+        self.admin_sign_in = dummy_data['admin_sign_in']
+        self.user_sign_in = dummy_data['user_sign_in']
         self.user_less_keys = dummy_data['user_less_keys']
         self.pwd_less_char = dummy_data['pwd_less_char']
         self.pwd_no_caps = dummy_data['pwd_no_caps']
@@ -27,11 +30,47 @@ class TestUserCase(unittest.TestCase):
         self.bad_phone =  dummy_data['bad_phone']
         self.phone_not_ten_dig = dummy_data['phone_not_ten_dig']
 
+    def admin_registration(self):
+        """ Register an admin"""
+        response = self.client.post('/api/v2/auth/signup',data = json.dumps(self.admin_sign_up), content_type= 'application/json')
+        return response
+    
+    def user_registration(self):
+        """ Register a user"""
+        response = self.client.post('/api/v2/auth/signup',data = json.dumps(self.user_sign_up), content_type= 'application/json')
+        return response
+
+    def admin_login(self):
+        """Sign in Admin"""
+        response = self.client.post('/api/v2/auth/signin',data = json.dumps(self.admin_sign_in), content_type= 'application/json')
+        return response
+    
+    def user_login(self):
+        """Sign in a User"""
+        response = self.client.post('/api/v2/auth/signin',data = json.dumps(self.user_sign_in), content_type= 'application/json')
+        return response
+
+    def admin_token(self):
+        self.admin_registration()
+        self.resp = self.admin_login()
+        self.tkn = json.loads(self.resp.data)
+        self.token = self.tkn['data']
+        auth_header = {'Authorization': 'Bearer {}'.format(self.token)}
+        return auth_header
+    
+    def user_token(self):
+        self.user_registration()
+        self.resp = self.user_login()
+        self.tkn = json.loads(self.resp.data)
+        self.token = self.tkn['data']
+        auth_header = {'Authorization': 'Bearer {}'.format(self.token)}
+        return auth_header
+
 class TestUserNormalRequestCase(TestUserCase):
     """Test valid requests"""
 
     def test_user_signup(self):
-        """Test POST a party Request"""
+        """Test create a Request"""
         response = self.client.post('/api/v2/auth/signup', data=json.dumps(self.user_sign_up), content_type='application/json')
         result = json.loads(response.data)
         self.assertEqual(result['message'], "User signed up successfully")

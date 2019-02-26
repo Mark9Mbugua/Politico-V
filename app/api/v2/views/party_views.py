@@ -87,6 +87,7 @@ def delete_party(party_id):
     if current_user ['username'] == "admin":
         party = PoliticalParties().get_one_party(party_id)
         delete_party = PoliticalParties().delete_party(party_id)
+       
         if party:
             return Serializer.json_serializer('Political Party deleted successfully', delete_party, 200), 200
         

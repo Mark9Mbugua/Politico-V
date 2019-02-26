@@ -25,14 +25,15 @@ def post_user():
     except KeyError:
         return Serializer.error_serializer('One or more keys is missing', 400), 400
     
-    if User().userIsValid(username) == True:
-        return Serializer.error_serializer('user already exists', 400), 400
-
     if response == True:
+        if User().userIsValid(username) == True:
+            return Serializer.error_serializer('user already exists', 400), 400
+
         password = User().generate_hash(password)
         new_user = User().register(firstname, lastname, username, email, phone, password)
         return Serializer.json_serializer('User signed up successfully', new_user, 201), 201
     return make_response(jsonify(response), 400)
+
 
 @uv2.route('/auth/signin', methods=['POST'])
 def login():
@@ -83,7 +84,7 @@ def post_candidate(office_id):
 
                     candidate = Candidate().register_candidate(office, party, username, candidate)
 
-                    return Serializer.json_serializer('Candidate successfully registered', candidate, 201), 201
+                    return Serializer.json_serializer('Candidate registered successfully', candidate, 201), 201
 
                 return Serializer.error_serializer('Party does not exist', 404), 404
             
