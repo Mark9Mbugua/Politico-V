@@ -20,7 +20,6 @@ def post_party():
             party_name = data['party_name']
             hqAddress = data['hqAddress']
             logoUrl = data['logoUrl']
-            party = PoliticalParties().create(party_name, hqAddress, logoUrl)
             response = Validators().party_data_validator(party_name, hqAddress)
             result = LogoUrlValidator().validate_logo_url(logoUrl)
         except KeyError:
@@ -28,6 +27,9 @@ def post_party():
 
         if response == True:
             if result == True:
+                if PoliticalParties().check_party_exists_by_name(party_name):
+                    return Serializer.error_serializer('Political party already exists', 400), 400
+                party = PoliticalParties().create(party_name, hqAddress, logoUrl)
                 return Serializer.json_serializer('Political party created successfully', party, 201), 201
             return make_response(jsonify(result), 400)
         

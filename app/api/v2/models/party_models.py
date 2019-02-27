@@ -36,6 +36,12 @@ class PoliticalParties():
         cur.execute("""SELECT * FROM parties WHERE party_id= '{}'""".format(party_id))
         party = cur.fetchall()
         return party
+    
+    def check_party_exists_by_name(self, party_name):
+        cur = self.db.cursor()
+        cur.execute("""SELECT * FROM parties WHERE party_name= '{}'""".format(party_name))
+        party = cur.fetchall()
+        return party
 
     
     def get_all_parties(self):
