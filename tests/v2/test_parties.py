@@ -56,7 +56,7 @@ class TestElectionsCase(unittest.TestCase):
         self.admin_registration()
         self.resp = self.admin_login()
         self.tkn = json.loads(self.resp.data)
-        self.token = self.tkn['data']
+        self.token = self.tkn['token']
         auth_header = {'Authorization': 'Bearer {}'.format(self.token)}
         return auth_header
     
@@ -64,7 +64,7 @@ class TestElectionsCase(unittest.TestCase):
         self.user_registration()
         self.resp = self.user_login()
         self.tkn = json.loads(self.resp.data)
-        self.token = self.tkn['data']
+        self.token = self.tkn['token']
         auth_header = {'Authorization': 'Bearer {}'.format(self.token)}
         return auth_header
 

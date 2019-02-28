@@ -54,7 +54,7 @@ class TestUserCase(unittest.TestCase):
         self.admin_registration()
         self.resp = self.admin_login()
         self.tkn = json.loads(self.resp.data)
-        self.token = self.tkn['data']
+        self.token = self.tkn['token']
         auth_header = {'Authorization': 'Bearer {}'.format(self.token)}
         return auth_header
     
@@ -62,7 +62,7 @@ class TestUserCase(unittest.TestCase):
         self.user_registration()
         self.resp = self.user_login()
         self.tkn = json.loads(self.resp.data)
-        self.token = self.tkn['data']
+        self.token = self.tkn['token']
         auth_header = {'Authorization': 'Bearer {}'.format(self.token)}
         return auth_header
 
@@ -90,7 +90,7 @@ class TestUserBadRequestCase(TestUserCase):
     def test_user_less_char(self):
         response = self.client.post('/api/v2/auth/signup', data=json.dumps(self.pwd_less_char), content_type='application/json')
         result = json.loads(response.data)
-        self.assertEqual(result['Error'], 'Password should have at least 5 characters')
+        self.assertEqual(result['Error'], 'Password should have at least 8 characters')
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
     

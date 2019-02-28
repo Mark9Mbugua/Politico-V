@@ -51,9 +51,9 @@ def login():
             access_token = create_access_token(identity = user)
 
             if access_token:
-                return Serializer.json_serializer('You are now logged in', access_token, 201), 201
+                return Serializer.signup_serializer('You are now logged in', access_token, 201), 201
             
-        return Serializer.error_serializer('Enter correct password', 400), 400
+        return Serializer.error_serializer('Check if credentials are correct', 400), 400
     
     return Serializer.error_serializer('User does not exist', 404), 404
 
