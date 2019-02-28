@@ -38,7 +38,6 @@ def vote():
 
 
 @vv2.route('/office/<int:office_id>/result', methods=['GET'])
-@jwt_required
 def get_results(office_id):
     """Get election results"""
     results = Vote().results_per_office(office_id)

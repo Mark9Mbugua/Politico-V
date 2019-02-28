@@ -38,7 +38,6 @@ def post_party():
     return Serializer.error_serializer('User not authorized to make this request', 401), 401
 
 @pv2.route('/parties', methods=['GET'])
-@jwt_required
 def get_parties():
     parties = PoliticalParties().get_all_parties()
     if parties:
@@ -47,7 +46,6 @@ def get_parties():
     return Serializer.error_serializer('Political parties cannot be found', 404), 404
 
 @pv2.route('/parties/<int:party_id>', methods=['GET'])
-@jwt_required
 def get_party(party_id):
     party = PoliticalParties().get_one_party(party_id)
     if party:
