@@ -181,7 +181,7 @@ def create_parties():
               example: "Muthaiga South"
             logo_url:
               type: string
-              example: "https://www"
+              example: "https://www.mayenmulla.com/profile_pic.jpg"
     responses:
       '201':
         description: CREATED
@@ -221,7 +221,7 @@ def get_specific_party(party_id):
 
 
 @app.route('/api/v2/parties/<int:party_id>', methods=['DELETE'])
-def delete_specific_party(office_id):
+def delete_specific_party(party_id):
     """ Delete specific party endpoint.
     ---
     tags:
@@ -247,7 +247,7 @@ def delete_specific_party(office_id):
     """
 
 
-@app.route('/api/v2/parties/<int:party_id>/name', methods=['PUT'])
+@app.route('/api/v2/parties/<int:party_id>/name', methods=['PATCH'])
 def patch_single_party(party_id):
     """ Update party name endpoint.
     ---
@@ -295,21 +295,70 @@ def register_candidate():
         schema:
           type: object
           properties:
-            candidate_id:
+            candidate:
               type: int
               example: 1
-            party_id:
+            party:
               type: int
               example: 1
     responses:
       '201':
         description: CREATED!
-      '409':
-        description: CONFLICT
       '400':
         description: BAD REQUEST
       '404':
         description: NOT FOUND
+    """
+  
+@app.route('/api/v2/vote', methods=['POST'])
+def vote():
+    """ Vote for a  candidate endpoint.
+    ---
+    tags:
+        - Vote
+    parameters:
+      -
+          name: authorization
+          in: header
+          type: string
+          required: true
+          example: Bearer
+      - in: body
+        name: Vote
+        required: true
+        schema:
+          type: object
+          properties:
+            office_id:
+              type: integer
+              example: 1
+            candidate_id:
+              type: integer
+              example: 1
+            voter_id:
+              type: integer
+              example: 1
+    responses:
+      '201':
+        description: CREATED
+      '400':
+        description: BAD REQUEST
+    """
+  
+@app.route('/api/v2/office/<int:office_id>/result', methods=['GET'])
+def get_election_results():
+    """ Get results endpoint.
+    ---
+    tags:
+        - Results
+    parameters:
+      - in: path
+        name: office_id
+        required: true
+        type: integer
+    responses:
+      '200':
+        description: SUCCESS
     """
 
 
