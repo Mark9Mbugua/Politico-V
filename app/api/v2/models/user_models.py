@@ -55,7 +55,7 @@ class User():
 
     def userIsValid(self, username):
         cur = self.db.cursor()
-        cur.execute("""SELECT user_id, firstname, lastname, username,  email, password FROM users WHERE username= %s""", (username, ))
+        cur.execute("""SELECT user_id, firstname, lastname, username, email, password FROM users WHERE username= %s""", (username, ))
         data = cur.fetchall()
         for user in data:
             if user[3] == username:
@@ -121,17 +121,17 @@ class User():
     def get_user_by_id(self, username):
         cur = self.db.cursor()
         cur.execute("""SELECT user_id FROM users WHERE username ='{}'""".format(username))
-        data = cur.fetchone()
-        if data:
-            user_id = data[0]
+        user_id = cur.fetchone()
         return user_id
     
     def email_exists(self, email):
-        self.cursor.execute("SELECT email from users WHERE email = '{}'".format(email))
+        cur = self.db.cursor()
+        cur.execute("SELECT email from users WHERE email = '{}'".format(email))
         data = cur.fetchone()
         email = data[0]
         return email
     
+
     @staticmethod
     def generate_hash(password):
         return sha256.hash(password)
@@ -143,20 +143,15 @@ class User():
 
 class Candidate(User):
     def register_candidate(self, office, party, username, candidate):
-        if self.userIsValid(username) == True:
-            try:
-                cur = self.db.cursor()
-                query = """INSERT INTO candidates(office, party, email, candidate)
-                        VALUES (%s,%s,%s, %s) RETURNING office, party, email, candidate"""
-                content = (office, party, email, candidate)
-                cur.execute(query, content)
-                user = cur.fetchone()
-                self.db.commit()
-                cur.close()
-                return self.candidate_serializer(tuple(itertools.chain(user, content)))
-            except Exception as error:
-                print(error)
-        raise Exception('A candidate must be a registered user first')
+        cur = self.db.cursor()
+        query = """INSERT INTO candidates(office, party, username, candidate)
+                VALUES (%s,%s,%s, %s) RETURNING office, party, username, candidate"""
+        content = (office, party, username, candidate)
+        cur.execute(query, content)
+        user = cur.fetchone()
+        self.db.commit()
+        cur.close()
+        return self.candidate_serializer(tuple(itertools.chain(user, content)))
 
     def check_candidate_registered(self, candidate, office):
         cur = self.db.cursor()

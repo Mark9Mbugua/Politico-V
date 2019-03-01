@@ -59,8 +59,8 @@ class Validators:
     def user_sign_up_validator(self, firstname, lastname, email, phone, password):
         """ validates user password """
         response = True
-        if len(password) < 5:
-            response = {'Error': 'Password should have at least 5 characters', 'Status': 400 }
+        if len(password) < 8:
+            response = {'Error': 'Password should have at least 8 characters', 'Status': 400 }
         
         if not re.search('[A-Z]', password):
             response = {'Error': 'Password should have atleast one capital letter', 'Status': 400}

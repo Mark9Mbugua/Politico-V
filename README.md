@@ -5,6 +5,14 @@
 Politico is a platform that enables citizens to give their mandate to politicians running for different government offices
 while building trust in the process through transparency.
 
+## Documentation
+To view this application's documentation go to:
+[Politico Documentation](https://politicov2.docs.apiary.io)
+
+## Hosting Link
+To interact with Politico API, kindly visit:
+[Politico Heroku Link](https://politico-final.herokuapp.com/)
+
 ## Getting Started
 Clone the repo from GitHub:
     
@@ -28,7 +36,7 @@ On the terminal type `export FLASK_APP=run.py` and hit enter. Run `flask run`
 
 #### On Postman and Heroku, use the following endpoints to perform the specified tasks
 
-Use this URL below to test the following endpoints: https://politico-v.herokuapp.com/
+Use this URL below to test the following endpoints: https://politico-final.herokuapp.com/
 
 		 
 | 	Endpoint                                |   Functionality                                |    
@@ -43,7 +51,9 @@ Use this URL below to test the following endpoints: https://politico-v.herokuapp
 | POST /api/v1/offices                      | Create a  political office                     |
 | GET /api/v1/offices                       | Retrieve all political offices                 |
 | GET /api/v1/offices/<int:id>              | Retrieve a specific political office           |                      
-
+| POST api/v2/office/1/register             | Register a user as a political candidate       |
+| POST api/v2/vote                          | Vote for a particular political candidate      |
+| GET api/v2/office/2/result                | Get election results per office                |
 
 ## Application Features
 

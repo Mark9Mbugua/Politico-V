@@ -6,15 +6,16 @@ class Config:
     CSRF_ENABLED = True 
     SECRET = os.getenv('SECRET')
     DEBUG = True
-    DATABASE_URL = 'postgresql://postgres:1998@localhost:5432/politico_db'
+    DATABASE_URL = os.getenv('DATABASE_URL')
 
 class DevelopmentConfig(Config):
     """Configurations for Development."""
     DEBUG = True
+    TESTING = False
 
 class TestingConfig(Config):
     """Configurations for Testing."""
-    DATABASE_URL='postgresql://postgres:1998@localhost:5432/test_politico_db'
+    DATABASE_URL= os.getenv('TEST_DATABASE_URL')
     DEBUG = True
     TESTING = True
 
@@ -24,8 +25,7 @@ class StagingConfig(Config):
 
 class ProductionConfig(Config):
     """Configurations for Production."""
-    DATABASE_URL = 'postgres://wxdaktrvhevvma:58c93ca91945a567e020f8ef8240d8668aa945ff255537f961d97059ce25d3bf@ec2-23-21-165-188.compute-1.amazonaws.com:5432/daulhq4hucu8ip'
-
+    DATABASE_URL = os.getenv('PROD_DATABASE_URL')
     DEBUG = False
     TESTING = False
 

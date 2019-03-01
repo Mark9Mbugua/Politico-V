@@ -4,17 +4,28 @@ party = {
         "logoUrl": 'https://www.jubilee.com/jubilee/img.jpg'
 }
 
+new_party = {
+        "party_name": "Level up",
+        "hqAddress": "Muthaiga",
+        "logoUrl": 'https://www.jubilee.com/jubilee/img.jpg'
+}
+
 office = {
     'office_type' : "Legislative",
     'office_name': "Member of Parliament"
 }
 
+register = {
+			"office": 1,
+            "party": 1,
+            "username": "Lilo",
+            "candidate": 1
+}
+
 vote = {
-    "office_name": "Governor",
-    "candidate_id": 1,
-    "cd_firstname": "Markize",
-    "cd_lastname": "Welar",
-    "voter_id": 1
+		"office_id": 1,
+         "candidate_id": 1,
+          "voter_id": 1
 }
 
 party_less_keys = {
@@ -156,9 +167,19 @@ county_mismatch_women_rep = {
     "office_name" : "Women Rep"
 }
 
+admin_sign_up = {
+	"firstname": "Mark",
+	"lastname": "Mbugua",
+    "username": "admin",
+	"email": "mimini@admin.com",
+	"phone" : "0712340908",
+	"password" : "Marksman001"
+}
+
 user_sign_up = {
 	"firstname": "Demba",
 	"lastname": "Basela",
+    "username": "Debasey",
 	"email": "dembaba@gmail.com",
 	"phone" : "0712340902",
 	"password" : "Macabee106"
@@ -167,6 +188,7 @@ user_sign_up = {
 user_less_keys = {
     "firstname": "Demba",
 	"lastname": "Basela",
+    "username": "Debasey",
 	"email": "dembaba@gmail.com",
 	"phone" : "0712340902",
 }
@@ -174,6 +196,7 @@ user_less_keys = {
 pwd_less_char = {
     "firstname": "Demba",
 	"lastname": "Basela",
+    "username": "Debasey",
 	"email": "dembaba@gmail.com",
 	"phone" : "0712340902",
 	"password" : "Mac1"
@@ -182,6 +205,7 @@ pwd_less_char = {
 pwd_no_caps = {
     "firstname": "Demba",
 	"lastname": "Basela",
+    "username": "Debasey",
 	"email": "dembaba@gmail.com",
 	"phone" : "0712340902",
 	"password" : "markize106"
@@ -190,6 +214,7 @@ pwd_no_caps = {
 pwd_all_caps = {
     "firstname": "Demba",
 	"lastname": "Basela",
+    "username": "Debasey",
 	"email": "dembaba@gmail.com",
 	"phone" : "0712340902",
 	"password" : "MARKIZE106"
@@ -198,6 +223,7 @@ pwd_all_caps = {
 pwd_no_digit = {
     "firstname": "Demba",
 	"lastname": "Basela",
+    "username": "Debasey",
 	"email": "dembaba@gmail.com",
 	"phone" : "0712340902",
 	"password" : "Markizeman"
@@ -206,6 +232,7 @@ pwd_no_digit = {
 firstname_all_char = {
     "firstname": "De*7#@",
 	"lastname": "Basela",
+    "username": "Debasey",
 	"email": "dembaba@gmail.com",
 	"phone" : "0712340902",
 	"password" : "Markize106"
@@ -214,6 +241,7 @@ firstname_all_char = {
 lastname_all_char = {
     "firstname": "Demba",
 	"lastname": "Bas*7#@",
+    "username": "Debasey",
 	"email": "dembaba@gmail.com",
 	"phone" : "0712340902",
 	"password" : "Markize106"
@@ -222,6 +250,7 @@ lastname_all_char = {
 bad_email = {
     "firstname": "Demba",
 	"lastname": "Basela",
+    "username": "Debasey",
 	"email": "dembabagmail.com",
 	"phone" : "0712340902",
 	"password" : "Markize106"
@@ -230,6 +259,7 @@ bad_email = {
 short_email = {
     "firstname": "Demba",
 	"lastname": "Basela",
+    "username": "Debasey",
 	"email": "d@g.com",
 	"phone" : "0712340902",
 	"password" : "Markize106"
@@ -238,6 +268,7 @@ short_email = {
 bad_phone = {
     "firstname": "Demba",
 	"lastname": "Basela",
+    "username": "Debasey",
 	"email": "dembaba@gmail.com",
 	"phone" : "071234090i",
 	"password" : "Markize106"
@@ -246,15 +277,28 @@ bad_phone = {
 phone_not_ten_dig = {
     "firstname": "Demba",
 	"lastname": "Basela",
+    "username": "Debasey",
 	"email": "dembaba@gmail.com",
 	"phone" : "07123409080908",
 	"password" : "Markize106"
 }
 
+admin_sign_in = {
+    "username": "admin",
+	"password" : "Marksman001"
+}
+
+user_sign_in = {
+    "username": "Debasey",
+	"password" : "Macabee106"
+}
+
 dummy_data = {
     'party': party,
     'office' : office,
+    'register': register,
     'vote': vote,
+    'new_party': new_party,
     'user_sign_up': user_sign_up,
     'party_less_keys' : party_less_keys,
     'office_less_keys': office_less_keys,
@@ -283,6 +327,7 @@ dummy_data = {
     'county_mismatch_mp' : county_mismatch_mp,
     'county_mismatch_women_rep' : county_mismatch_women_rep,
     'party_name_not_purely_alpha_and_space' : party_name_not_purely_alpha_and_space,
+    'admin_sign_up': admin_sign_up,
     'user_sign_up' : user_sign_up,
     'user_less_keys' : user_less_keys,
     'pwd_less_char' : pwd_less_char,
@@ -295,4 +340,6 @@ dummy_data = {
     'short_email': short_email,
     'bad_phone': bad_phone,
     'phone_not_ten_dig': phone_not_ten_dig,
+    'admin_sign_in': admin_sign_in,
+    'user_sign_in': user_sign_in
 }

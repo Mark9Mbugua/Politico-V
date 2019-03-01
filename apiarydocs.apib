@@ -1,0 +1,358 @@
+HOST: https://politico-final.herokuapp.com/
+
+# Politico
+
+Politico enables citizens give their mandate to politicians running for different government offices
+while building trust in the process through transparency.
+
+
+## Political parties [/api/v2/parties]
+
+### View All Parties [GET]
+
+Any user is able to make a request to view all the political parties.
+
++ Response 200 (application/json)
+
+    {
+        "data": [
+            {
+                "hqAddress": "Winterfell",
+                "logoUrl": "https://www.thestarks.com/starks_img/.jpg",
+                "party_id": "1",
+                "party_name": "The Starks"
+            },
+            {
+                "hqAddress": "Muthaiga South",
+                "logoUrl": "https://www.jubilee.com/jubz_img/.jpg",
+                "party_id": "2",
+                "party_name": "Jubilee"
+            }
+        ],
+        "message": "All political parties retrieved successfully",
+        "status": 200
+    }
+
+### Create a party [POST]
+
+Only an admin can create a political party.
+An admin cannot create duplicate political parties
+
++ Request (application/json)
+
+    + Body
+
+        {
+            "party_name": "The Starks",
+            "hqAddress": "Winterfell",
+            "logoUrl": "https://www.thestarks.com/starks_img/.jpg"
+        }
+        
+    + Headers
+
+            x-access-token: ""
+    
+    + Response 201 (application/json)   
+    
+        {
+            "data": {
+                "hqAddress": "Dragon Stone",
+                "logoUrl": "https://www.targaryens.com/tars_img/.jpg",
+                "party_id": 2,
+                "party_name": "The Targaryens"
+            },
+            "message": "Political party created successfully",
+            "status": 201
+        }
+
+## Specific Party [/api/v2/parties/{party_id}]
+
++ Parameters
+    + party_id (number) - ID of a particular party is an integer
+
+### View a specific party [GET]
+
+Any user can view the details of a specific party via the party's ID
+
++ Response 200 (application/json)
+
+    {
+        "data": {
+            "hqAddress": "https://www.targaryens.com/tars_img/.jpg",
+            "logoUrl": "Dragon Stone",
+            "party_id": 2,
+            "party_name": "The Targaryens"
+        },
+        "message": "Political party retrieved successfully",
+        "status": 200
+    }
+
+## Edit a specific Party [/api/v2/parties/{party_id}/name]
+
++ Parameters
+    + party_id (number) - ID of a particular party is an integer
+
+### Edit the name of Party [PATCH]
+
+Only an admin is authorized to change the name of a specific political party
+
++ Request (applicaton/json)
+    
+    + Body
+
+        {
+            "party_name": "Man Dem"
+        }
+    
+    + Headers
+
+        x-access-token: ""
+
++ Response 200 (application/json)
+
+    {
+        "data": {
+            "name_change": [
+                "Man Dem"
+            ]
+        },
+        "message": "Political party updated successfully",
+        "status": 200
+    }
+
+### Delete a specific party [DELETE]
+
+Only an admin is authorized to delete a specific party
+
+    + Response 200 (application/json)
+
+        + Headers
+
+        x-access-token: ""
+
+        {
+            "data": null,
+            "message": "Political Party deleted successfully",
+            "status": 200
+        }
+
+
+## Political offices [/api/v2/offices]
+
+### View All Offices [GET]
+
+Any user is able to make a request to view all the political offices.
+
++ Response 200 (application/json)
+
+        {
+                "data": [
+                {
+                    "office_id": "1",
+                    "office_name": "member of Parliament",
+                    "office_type": "Legislative"
+                },
+                {
+                    "office_id": "2",
+                    "office_name": "Senator",
+                    "office_type": "Legislative"
+                }
+            ],
+            "message": "All political offices retrieved successfully",
+            "status": 200
+        
+        }
+
+### Create an office [POST]
+
+Only an admin is authorized to create an office
+
++ Request (appication/json)
+
+    + Body
+
+        {
+            "office_type": "Legislative",
+            "office_name" : "Senator"
+        }
+    
+    + Headers
+
+        x-access-token: ""
+
++ Response 201 (application/json)
+
+    {
+        "data": {
+            "office_id": 2,
+            "office_name": "Senator",
+            "office_type": "Legislative"
+        },
+        "message": "Political office created successfully",
+        "status": 201
+    }
+
+## Specific Office [/api/v2/parties/{office_id}]
+
++ Parameters
+    + office_id (number) - ID of a particular office is an integer
+
+### View a Specific Office [GET]
+Any user can view the details of a specific party via the party's ID
+
++ Response 200 (application/json)
+
+    {
+        "data": {
+            "office_id": 2,
+            "office_name": "Senator",
+            "office_type": "Legislative"
+        },
+        "message": "Political office created successfully",
+        "status": 201
+    }
+
+## Register a user as a candidate to vie for a specific office [/api/v2/offices/{office_id}/register]
++ Parameters
+    + office_id (number) - ID of the office that a candidate would like to run for.
+
+### Register a user as a candidate [POST]
+Only an admin is authorized to register a candidate
+
++ Request (application/json)
+
+    + Body
+
+        {
+			"office": 1,
+            "party": 1,
+            "username": "Lilo",
+            "candidate": 1
+        }
+    
+    + Headers
+
+        x-access-token: ""
+    
++ Response 201 (appication/json)
+    {
+        "data": {
+            "candidate": 1,
+            "email": "Lilo",
+            "office": 1
+        },
+        "message": "Candidate registered successfully",
+        "status": 201
+    }
+
+## VOTE [/api/v2/vote]
+
+### Vote for a candidate [POST]
+
+A registered user can vote for a candidate in a specific office.
+
++ Request (application/json)
+
+    + Body 
+
+        {
+            "office_id": 2,
+            "candidate_id": 2,
+            "voter_id": 2
+        }
+
+    + Headers
+
+        x-access-token: ""
+    
++ Response 201 (application/json)
+
+    {
+        "data": {
+            "candidate_id": 2,
+            "office_id": 2,
+            "voter_id": 2
+        },
+        "message": "You successfully cast your vote",
+        "status": 201
+    }
+
+## Signup [/api/v2/auth/signup]
+
+### Signup a new user [POST]
+
+A new user is able to create a new Politico account
+
++ Request (application/json)
+
+    + Body
+        
+        {
+            "firstname":"Dickson",
+            "lastname": "Gichia",
+            "username": "Gichboy",
+            "email": "gichboy@gmail.com",
+            "phone" : "0726847471",
+            "password" : "Gichmann001"
+        }
+
++ Response 201 (application/json)
+
+    {
+    "data": {
+        "email": "gichboy@gmail.com",
+        "firstname": "Dickson",
+        "lastname": "Gichia",
+        "password": "$pbkdf2-sha256$29000$T4mRck5JSUkpJaQ0htCaUw$yDk4IhwdsW3VSkIrrUnJYA//Xr0Z5DuTlYDYwHyTkPA",
+        "phone": "0726847471",
+        "user_id": 3,
+        "username": "Gichboy"
+    },
+    "message": "User signed up successfully",
+    "status": 201
+}
+
+## Signin [/api/v2/auth/signin]
+
+### Signin a new user [POST]
+
+A user is able to sign into his or her Politico account using their credentials
+
++ Request (application/json)
+
+    + Body
+
+        {
+            "username": "Gichboy",
+            "password" : "Gichmann001"
+	    }        
+
++ Response 200 (application/json)
+
+    {
+        "message": "You are now logged in",
+        "status": 201,
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NTE0Mjk1MzgsIm5iZiI6MTU1MTQyOTUzOCwianRpIjoiMjc0NDk5ODAtODIxMy00YzQxLTk1MjctZWI4MTVjMzdkNzBhIiwiZXhwIjoxNTUxNDMwNDM4LCJpZGVudGl0eSI6eyJ1c2VyX2lkIjozLCJmaXJzdG5hbWUiOiJEaWNrc29uIiwibGFzdG5hbWUiOiJHaWNoaWEiLCJ1c2VybmFtZSI6IkdpY2hib3kiLCJlbWFpbCI6ImdpY2hib3lAZ21haWwuY29tIiwicGhvbmUiOiIkcGJrZGYyLXNoYTI1NiQyOTAwMCRUNG1SY2s1SlNVa3BKYVEwaHRDYVV3JHlEazRJaHdkc1czVlNrSXJyVW5KWUEvL1hyMFo1RHVUbFlEWXdIeVRrUEEiLCJwYXNzd29yZCI6NzI2ODQ3NDcxfSwiZnJlc2giOmZhbHNlLCJ0eXBlIjoiYWNjZXNzIn0.QQ5S5EE83dBXGo95H-0w7vn2JEXrN50UJrM4b3VU8Mo"
+    }
+
+## Election results of a specific office [/api/v2/offices/{office_id}/result]
+
++ Parameters
+    + office_id (number) - ID of the office a candiate run for during the elections
+
+### View office results [GET]
+Any user ccan view the results of the elections per political office
+
++ Response 200 (application/json)
+
+    {
+        "data": [
+            {
+                "candidate": 2,
+                "office": 2,
+                "result": 1
+            }
+        ],
+        "message": "Election results retrieved successfully",
+        "status": 200
+    }

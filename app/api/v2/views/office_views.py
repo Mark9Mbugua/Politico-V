@@ -30,7 +30,6 @@ def post_office():
     return Serializer.error_serializer('User not authorized to make this request', 401), 401
 
 @ov2.route('/offices', methods=['GET'])
-@jwt_required
 def get_all_offices():
     offices = PoliticalOffices().get_all_offices()
     if offices:     
@@ -39,7 +38,6 @@ def get_all_offices():
     return Serializer.error_serializer('Political office cannot be found', 404), 404
 
 @ov2.route('/offices/<int:office_id>', methods=['GET'])
-@jwt_required
 def get_office(office_id):
     office = PoliticalOffices().get_one_office(office_id)
     if office:
