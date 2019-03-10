@@ -10,8 +10,7 @@ ov2 = Blueprint('ap3', __name__, url_prefix='/api/v2')
 @ov2.route('/offices', methods=['POST'])
 @jwt_required
 def post_office():
-    current_user = get_jwt_identity()
-    if current_user ['username'] == "admin":
+    if User().i_am_admin(get_jwt_identity()):
         data = request.get_json()
         try:
             office_name = data["office_name"]

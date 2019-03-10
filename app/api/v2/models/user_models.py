@@ -1,10 +1,11 @@
-from app.db_config import init_db
-from .party_models import PoliticalParties
-from .office_models import PoliticalOffices
-import itertools
-from passlib.hash import pbkdf2_sha256 as sha256
 from app.api.v2.utils.serializer import Serializer
+from app.db_config import init_db
 from flask_jwt_extended import create_access_token
+from .office_models import PoliticalOffices
+from .party_models import PoliticalParties
+from passlib.hash import pbkdf2_sha256 as sha256
+from psycopg2.extras import RealDictCursor
+import itertools
 
 
 class User():
@@ -52,7 +53,26 @@ class User():
             if self.generate_hash(password):
                 return data
                 
-
+    def get_user_by_username(self, username):
+        cur = self.db.cursor()
+        cur.execute("""SELECT * FROM users WHERE username = '{}'""".format(username))
+        user = cur.fetchall()
+        return user
+    
+    def get_user_by_id(self, username):
+        cur = self.db.cursor()
+        cur.execute("""SELECT user_id FROM users WHERE username ='{}'""".format(username))
+        user_id = cur.fetchone()
+        return user_id
+    
+    def email_exists(self, email):
+        cur = self.db.cursor()
+        cur.execute("SELECT email from users WHERE email = '{}'".format(email))
+        data = cur.fetchone()
+        email = data[0]
+        return email
+   
+   
     def userIsValid(self, username):
         cur = self.db.cursor()
         cur.execute("""SELECT user_id, firstname, lastname, username, email, password FROM users WHERE username= %s""", (username, ))
@@ -79,24 +99,13 @@ class User():
         return password
 
     def generate_token(self, username):
-        user_name = self.get_user_by_username(username)
-        token = create_access_token(identity=user_name)
+        user_id = self.get_user_by_id(username)
+        token = create_access_token(identity=user_id)
         return token
 
     def user_login(self, username):
         token = self.generate_token(username)
         return token
-    
-    def get_admin_by_id(self, user_id):
-        cur =self.db.cursor()
-        cur.execute("""SELECT * from users WHERE user_id = {} and username = 'admin'""".format(user_id))
-        admin = cur.fetchall()
-        return admin
-
-    def promote_user_to_admin(self):
-        cur =self.db.cursor()
-        cur.execute("UPDATE users SET is_admin = 'true' where username = 'admin'")
-        self.db.commit()
     
     def create_admin(self):
         pwd = self.generate_hash('Marksman001')
@@ -105,32 +114,25 @@ class User():
         self.register('Mark', 'Mbugua', 'admin', 'mimini@admin.com', '0712340908', pwd)
         self.promote_user_to_admin()
     
-    def admin_is_me(self, user_id):
+    def promote_user_to_admin(self):
         cur =self.db.cursor()
-        cur.execute("""SELECT * from users WHERE user_id = '{}' and is_admin= 'true'""".format(user_id))
-        user = cur.fetchall()
-        self.promote_user_to_admin()
-        return user
-
-    def get_user_by_username(self, username):
-        cur = self.db.cursor()
-        cur.execute("""SELECT * FROM users WHERE username = '{}'""".format(username))
-        user = cur.fetchall()
-        return user
+        cur.execute("UPDATE users SET is_admin = 'true' where username = 'admin'")
+        self.db.commit()
     
-    def get_user_by_id(self, username):
-        cur = self.db.cursor()
-        cur.execute("""SELECT user_id FROM users WHERE username ='{}'""".format(username))
-        user_id = cur.fetchone()
-        return user_id
+    def get_admin_by_id(self, user_id):
+        cur =self.db.cursor()
+        cur.execute("""SELECT * from users WHERE user_id = {} and username = 'admin'""".format(user_id))
+        admin = cur.fetchall()
+        return admin  
     
-    def email_exists(self, email):
-        cur = self.db.cursor()
-        cur.execute("SELECT email from users WHERE email = '{}'".format(email))
-        data = cur.fetchone()
-        email = data[0]
-        return email
-    
+    def i_am_admin(self, user_id):
+        for u_id in user_id:
+            if u_id:
+                cur =self.db.cursor()
+                cur.execute("SELECT * from users WHERE user_id = {} and is_admin = 'true'".format(u_id))
+                user = cur.fetchall()
+                self.promote_user_to_admin()
+                return user
 
     @staticmethod
     def generate_hash(password):
