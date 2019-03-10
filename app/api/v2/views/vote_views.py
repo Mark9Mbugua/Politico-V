@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, make_response, Blueprint
 from app.api.v2.models.vote_models import Vote
-from app.api.v2.models.user_models import Candidate
+from app.api.v2.models.user_models import User, Candidate
 from app.api.v2.utils.validators import Validators
 from app.api.v2.utils.serializer import Serializer
 from flask_jwt_extended import get_jwt_identity, jwt_required
@@ -12,8 +12,7 @@ vv2 = Blueprint('vp1', __name__, url_prefix='/api/v2')
 @jwt_required
 def vote():
     """Route for casting a vote"""
-    current_user = get_jwt_identity()
-    if current_user['username'] != "admin":  
+    if not User().i_am_admin(get_jwt_identity()):  
         try:
             data = request.get_json()
             office_id = data['office_id']

@@ -47,8 +47,7 @@ def login():
 
     if User().userIsValid(username) == True:
         if User().password_is_valid(username, password) == True:
-            user = User().login(username, password)
-            access_token = create_access_token(identity = user)
+            access_token = User().user_login(username)
 
             if access_token:
                 return Serializer.signup_serializer('You are now logged in', access_token, 201), 201
@@ -60,8 +59,7 @@ def login():
 @uv2.route('/office/<int:office_id>/register', methods=['POST'])
 @jwt_required
 def post_candidate(office_id):
-    current_user = get_jwt_identity()
-    if current_user ['username'] == "admin": 
+    if User().i_am_admin(get_jwt_identity()): 
         """ Route for registering a candidate"""
         try:
             data = request.get_json()

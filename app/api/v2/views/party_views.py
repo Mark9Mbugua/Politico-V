@@ -12,8 +12,7 @@ pv2 = Blueprint('ap4', __name__, url_prefix='/api/v2')
 @pv2.route('/parties', methods=['POST'])
 @jwt_required 
 def post_party():
-    current_user = get_jwt_identity()
-    if current_user['username'] == "admin":
+    if User().i_am_admin(get_jwt_identity()):
         """route for creating a new political party"""
         try:
             data = request.get_json()
@@ -57,8 +56,7 @@ def get_party(party_id):
 @pv2.route('/parties/<int:party_id>', methods=['PATCH'])
 @jwt_required
 def update_party(party_id):
-    current_user = get_jwt_identity()
-    if current_user ['username'] == "admin":
+    if User().i_am_admin(get_jwt_identity()):
         try:
             data = request.get_json()
             party_name = data['party_name']
@@ -83,8 +81,7 @@ def update_party(party_id):
 @pv2.route('/parties/<int:party_id>', methods=['DELETE'])
 @jwt_required
 def delete_party(party_id):
-    current_user = get_jwt_identity()
-    if current_user ['username'] == "admin":
+    if User().i_am_admin(get_jwt_identity()):
         party = PoliticalParties().get_one_party(party_id)
         delete_party = PoliticalParties().delete_party(party_id)
        

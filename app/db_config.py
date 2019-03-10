@@ -71,7 +71,7 @@ def drop_test_tables():
 def tables():
     
         users = """CREATE TABLE IF NOT EXISTS users(
-                user_id SERIAL PRIMARY KEY NOT NULL,
+                user_id serial PRIMARY KEY NOT NULL,
                 firstname VARCHAR(80) NOT NULL,
                 lastname VARCHAR(80) NOT NULL,
                 username VARCHAR(80) NOT NULL,
