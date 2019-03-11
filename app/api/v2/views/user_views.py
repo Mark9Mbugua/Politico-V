@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, make_response, Blueprint
-from app.api.v2.models.user_models import User, Candidate
+from app.api.v2.models.user_models import User
 from app.api.v2.models.party_models import PoliticalParties
 from app.api.v2.models.office_models import PoliticalOffices
 from app.api.v2.utils.validators import Validators
@@ -56,39 +56,3 @@ def login():
     
     return Serializer.error_serializer('User does not exist', 404), 404
 
-@uv2.route('/office/<int:office_id>/register', methods=['POST'])
-@jwt_required
-def post_candidate(office_id):
-    if User().i_am_admin(get_jwt_identity()): 
-        """ Route for registering a candidate"""
-        try:
-            data = request.get_json()
-            office = data['office']
-            username = data['username']
-            party = data['party']
-            candidate = data['candidate']
-            
-        except KeyError:
-            return Serializer.error_serializer('One or more keys is missing', 400), 400
-        
-        if User().userIsValid(username) == True:
-
-            if Candidate().check_candidate_registered(candidate, office):
-                return Serializer.error_serializer('Candidate is already registered', 400), 400
-
-            if PoliticalOffices().check_office_exists(office):
-
-                if PoliticalParties().check_party_exists(party):
-
-                    candidate = Candidate().register_candidate(office, party, username, candidate)
-
-                    return Serializer.json_serializer('Candidate registered successfully', candidate, 201), 201
-
-                return Serializer.error_serializer('Party does not exist', 404), 404
-            
-            return Serializer.error_serializer('Office does not exist', 404), 404
-
-        return Serializer.error_serializer('User does not exist', 404), 404
-
-    return Serializer.error_serializer('User not authorized to make this request', 401), 401
-    

@@ -93,17 +93,18 @@ def tables():
                 hqAddress VARCHAR(80) NOT NULL)"""
 
         candidates = """CREATE TABLE IF NOT EXISTS candidates(
-                candidate SERIAL NOT NULL,
-                office INTEGER NOT NULL,
-                party INTEGER NOT NULL,
-                username VARCHAR(80) NOT NULL,
+                reg_id SERIAL NOT NULL,
+                office INTEGER NOT NULL references offices(office_id) on delete cascade,
+                party INTEGER NOT NULL references parties(party_id) on delete cascade,
+                candidate INTEGER NOT NULL references users(user_id) on delete cascade,
                 PRIMARY KEY (candidate, office))"""
 
         votes = """CREATE TABLE IF NOT EXISTS votes(
                 vote_id SERIAL NOT NULL,
-                office INTEGER NOT NULL,
-                voter INTEGER NOT NULL,
-                candidate INTEGER NOT NULL,
+                createdOn TIMESTAMP DEFAULT now(),
+                office INTEGER NOT NULL references offices(office_id) on delete cascade,
+                voter INTEGER NOT NULL references users(user_id) on delete cascade,
+                candidate INTEGER NOT NULL references users(user_id) on delete cascade,
                 PRIMARY KEY (voter, office))"""
 
         queries = [users, offices, parties, candidates, votes]

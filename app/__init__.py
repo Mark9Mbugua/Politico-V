@@ -28,6 +28,9 @@ def create_app(config_name):
     from .api.v2.views.user_views import uv2
     app.register_blueprint(uv2)
 
+    from .api.v2.views.candidate_views import cv2
+    app.register_blueprint(cv2)
+    
     from .api.v2.views.vote_views import vv2
     app.register_blueprint(vv2)
     

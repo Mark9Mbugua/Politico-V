@@ -133,6 +133,17 @@ class User():
                 user = cur.fetchall()
                 self.promote_user_to_admin()
                 return user
+    
+    def find_by_user_id(self, user_id):
+        cur =self.db.cursor()
+        cur.execute("SELECT * from users WHERE user_id = {}".format(user_id))
+        user = cur.fetchall()
+        return user
+    
+    def is_digit(self, data):
+        if isinstance(data, int):
+            return True
+        return False
 
     @staticmethod
     def generate_hash(password):
@@ -142,23 +153,5 @@ class User():
     def verify_hash(password, hash):
         """returns True if password has been hashed"""
         return sha256.verify(password, hash)
-
-class Candidate(User):
-    def register_candidate(self, office, party, username, candidate):
-        cur = self.db.cursor()
-        query = """INSERT INTO candidates(office, party, username, candidate)
-                VALUES (%s,%s,%s, %s) RETURNING office, party, username, candidate"""
-        content = (office, party, username, candidate)
-        cur.execute(query, content)
-        user = cur.fetchone()
-        self.db.commit()
-        cur.close()
-        return self.candidate_serializer(tuple(itertools.chain(user, content)))
-
-    def check_candidate_registered(self, candidate, office):
-        cur = self.db.cursor()
-        cur.execute( """SELECT * FROM candidates WHERE candidate = %s and office = %s""", (candidate, office))
-        candidate = cur.fetchone()
-        return candidate
 
 

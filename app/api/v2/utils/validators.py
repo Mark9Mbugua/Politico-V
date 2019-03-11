@@ -43,15 +43,15 @@ class Validators:
             response = {'Error': 'Office type must either be Legislative, Executive or County', 'Status': 400}
             
         if office_type == 'Legislative':
-            if office_name != 'Member of Parliament' and office_name != 'Women Rep' and office_name != 'Senator':
+            if 'Member of Parliament' not in office_name  and 'Women Rep' not in office_name and 'Senator' not in office_name:
                 response = {'Error': 'Only a Senator, Member of Parliament or a Women Rep can occupy a legislative office', 'Status': 400} 
         
         if office_type == 'Executive':
-            if office_name != 'President' and office_name != 'Prime Minister':
+            if 'President' not in office_name  and 'Prime Minister' not in office_name:
                 response = {'Error': 'Only the President or the Prime Minister can occupy an executive office', 'Status': 400} 
 
         if office_type == 'County':
-            if office_name != 'Governor' and office_name != 'MCA':
+            if 'Governor' not in office_name  and 'MCA' not in office_name:
                 response = {'Error': 'Only a Governor or an MCA can occupy a county office', 'Status': 400} 
 
         return response 
