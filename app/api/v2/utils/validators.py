@@ -1,106 +1,104 @@
-from passlib.hash import pbkdf2_sha256 as sha256
+from urllib.parse import urlparse
 import re
 
 class Validators:
-    
     types_of_offices = ['Legislative', 'Executive', 'County']
-    office_names = ['President','Prime Minister' 'Governor', 'Senator', 'Member of Parliament', 'Women Rep', 'MCA']
+    
+    def is_alpha_or_space(self, data):
+        for x in data:
+            if x.isalpha() or x.isspace():
+                return  True
+            return False
+    
+    def is_space(self, data):
+        if re.search(r'\s', data):
+            return True
+        return False 
+    
+    def is_empty(self, data):        
+        if data.isspace() or data == "":
+            return True
+        return False
+    
+    def is_digit(self, data):
+        for x in data:
+            if x.isdigit():
+                return True
+            return False
+    
+    def is_str(self, data):
+        if isinstance(data, str):
+            return True
+        return False
 
-    def party_data_validator(self, party_name, hqAddress):
-        response = True
-        if not all(x.isalpha() or x.isspace() for x in party_name):
-            response = {'Error': 'Name should only have letters and spaces', 'Status': 400}
-        
-        if not all(x.isdigit() or x.isalpha() or x.isspace() for x in hqAddress):
-            response = {'Error': 'hqAddress should have letters, spaces and numbers only', 'Status': 400}
-        
-        if all(x.isdigit() for x in hqAddress):
-            response = {'Error': 'hqAddress should have letters too', 'Status': 400}
+    def valid_office_type(self, office_type, types_of_offices):
+        if office_type in self.types_of_offices:
+            return True
+        return False
 
-        if not isinstance(party_name, str):
-            response = {'Error': 'Name should be in string format', 'Status': 400}
-
-        if not isinstance(hqAddress, str):
-            response = {'Error': 'hqAddress should be in string format', 'Status': 400}
-        
-        if party_name == "" or party_name.isspace():
-            response = {'Error': 'Party name is required', 'Status': 400}
-        
-        if hqAddress == "" or hqAddress.isspace():
-            response = {'Error': 'hqAddress is required', 'Status': 400}
-        
-        return response
-
-    def office_data_validator(self, office_name, office_type):
-        response = True
-        if not isinstance(office_type, str):
-            response = {'Error': 'Office type should be in string format', 'Status': 400}
-            
-        if not isinstance(office_name, str):
-            response =  {'Error': 'Office name should be in string format', 'Status': 400}
-        
-        if office_type not in self.types_of_offices:
-            response = {'Error': 'Office type must either be Legislative, Executive or County', 'Status': 400}
-            
+    def valid_legilative_office(self, office_type, office_name): 
         if office_type == 'Legislative':
-            if 'Member of Parliament' not in office_name  and 'Women Rep' not in office_name and 'Senator' not in office_name:
-                response = {'Error': 'Only a Senator, Member of Parliament or a Women Rep can occupy a legislative office', 'Status': 400} 
-        
+            if 'Member of Parliament' in office_name  and 'Women Rep' in office_name and 'Senator' in office_name:
+                return True
+            return False
+
+    def valid_executive_office(self, office_type, office_name):     
         if office_type == 'Executive':
-            if 'President' not in office_name  and 'Prime Minister' not in office_name:
-                response = {'Error': 'Only the President or the Prime Minister can occupy an executive office', 'Status': 400} 
-
+            if office_name == "President" or office_name == 'Prime Minister':
+                return True
+            return False
+    
+    def valid_executive_location(self, office_type, location):
+        if office_type == 'Executive':
+            if location == 'Kenya':
+                return True
+            return False
+   
+    def valid_county_office(self, office_type, office_name):
         if office_type == 'County':
-            if 'Governor' not in office_name  and 'MCA' not in office_name:
-                response = {'Error': 'Only a Governor or an MCA can occupy a county office', 'Status': 400} 
-
-        return response 
+            if 'Governor' in office_name  or 'MCA' in office_name:
+                return True
+            return False
     
-    def user_sign_up_validator(self, firstname, lastname, email, phone, password):
+    def password_short(self, data):
         """ validates user password """
-        response = True
-        if len(password) < 8:
-            response = {'Error': 'Password should have at least 8 characters', 'Status': 400 }
-        
-        if not re.search('[A-Z]', password):
-            response = {'Error': 'Password should have atleast one capital letter', 'Status': 400}
-        
-        if not re.search('[a-z]', password):
-            response = {'Error': 'Password should have atleast one lowercase letter', 'Status': 400}
-        
-        if not re.search('[0-9]', password):
-            response = {'Error': 'Password should have atleast one number', 'Status': 400}
-        
-        if not all(x.isalpha() or x.isspace() for x in firstname):
-            response = {'Error': 'First name should only have letters and spaces', 'Status': 400}
-        
-        if not all(x.isalpha() or x.isspace() for x in lastname):
-            response = {'Error': 'Last name should only have letters and spaces', 'Status': 400}
-        
-        if re.search('@', email) is None:
-            response = {'Error': "Email should be in the format 'name@address.com'", 'Status': 400}
-        
-        if not isinstance(firstname, str):
-            response = {'Error': 'Name should be in string format', 'Status': 400}
-        
-        if not isinstance(lastname, str):
-            response = {'Error': 'Name should be in string format', 'Status': 400}
-        
-        if not isinstance(email, str):
-            response = {'Error': 'Email should be in string format', 'Status': 400}
-        
-        if len(email) < 9:
-            response = {'Error': 'Email is too short', 'Status': 400}
-        
-        if not all(x.isdigit() for x in phone):
-            response = {'Error': 'Phone number should have digits only', 'Status': 400}
-        
-        if len(phone) != 10:
-            response = {'Error': 'Phone number should have 10 digits', 'Status': 400}
-
-        return response
-        
-        
-
+        if len(data) < 8:
+            return True
+        return False
     
+    def caps_password(self, data):
+        if not re.search('[A-Z]', data):
+            return True
+        return False
+
+    def small_letter_password(self, data):
+        if not re.search('[a-z]', data):
+            return True
+        return False
+    
+    def integer_password(self, data):
+        if not re.search('[0-9]', data):
+            return True
+        return False
+    
+    def valid_email(self, email):
+        valid = re.match(
+            r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email.strip())
+        if not valid:
+            return False
+        return True
+    
+    def short_phone_no(self, data):
+        if len(data) != 12:
+            return True
+        return False
+    
+    """Validate logoUrl"""
+    def valid_logo_url(self, data):
+        parsed_url = urlparse(data)
+        if parsed_url.scheme and parsed_url.netloc and parsed_url.path:
+            return True
+        return False
+
+
 

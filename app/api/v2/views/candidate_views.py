@@ -21,20 +21,20 @@ def post_candidate(office_id):
             candidate = data['candidate']
             
         except KeyError:
-            return Serializer.error_serializer('One or more keys is missing', 400), 400
+            return Serializer.json_error('One or more keys is missing', 400), 400
         
-        if User().is_digit(party) == False:
-            return Serializer.error_serializer('Party should be a digit', 400), 400
+        if Validators().is_str(party) == True:
+            return Serializer.json_error('Party should be a number', 400), 400
 
-        if User().is_digit(candidate) == False:
-            return Serializer.error_serializer('Candidate should be a digit', 400), 400        
+        if Validators().is_str(candidate) == True:
+            return Serializer.json_error('Candidate should be a number', 400), 400        
         
-        if User().is_digit(office_id) == False:
-            return Serializer.error_serializer('Office should be a digit', 400), 400
+        if Validators().is_str(office_id) == True:
+            return Serializer.json_error('Office should be a number', 400), 400
         
         # cannot register admin as a candidate
         if User().get_admin_by_id(candidate):
-            return Serializer.error_serializer('You are not authorized to register admin as a candidate', 400), 400
+            return Serializer.json_error('You are not authorized to register admin as a candidate', 400), 400
   
         if User().find_by_user_id(candidate):
 
@@ -46,15 +46,15 @@ def post_candidate(office_id):
 
                         candidate = Candidate().register_candidate(office_id, party, candidate)
 
-                        return Serializer.json_serializer('Candidate registered successfully', candidate, 201), 201
+                        return Serializer.json_success('Candidate registered successfully', candidate, 201), 201
 
-                    return Serializer.error_serializer('Candidate is already registered', 400), 400
+                    return Serializer.json_error('Candidate is already registered', 400), 400
 
-                return Serializer.error_serializer('Party does not exist', 404), 404
+                return Serializer.json_error('Party does not exist', 404), 404
                 
-            return Serializer.error_serializer('Office does not exist', 404), 404
+            return Serializer.json_error('Office does not exist', 404), 404
 
-        return Serializer.error_serializer('Candidate does not exist', 404), 404
+        return Serializer.json_error('Candidate does not exist', 404), 404
 
-    return Serializer.error_serializer('User not authorized to make this request', 401), 401
+    return Serializer.json_error('User not authorized to make this request', 401), 401
     

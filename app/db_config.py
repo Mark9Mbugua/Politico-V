@@ -76,7 +76,7 @@ def tables():
                 lastname VARCHAR(80) NOT NULL,
                 username VARCHAR(80) NOT NULL,
                 email VARCHAR(100) NOT NULL,
-                phone INTEGER NOT NULL,
+                phone BIGINT NOT NULL,
                 password VARCHAR NOT NULL,
                 is_admin BOOLEAN DEFAULT FALSE,
                 date_created timestamp with time zone DEFAULT ('now'::text)::date)"""
@@ -84,7 +84,8 @@ def tables():
         offices = """CREATE TABLE IF NOT EXISTS offices (
                 office_id SERIAL PRIMARY KEY NOT NULL,
                 office_name VARCHAR(80) NOT NULL,
-                office_type VARCHAR(80) NOT NULL)"""
+                office_type VARCHAR(80) NOT NULL,
+                location VARCHAR(80) NOT NULL)"""
 
         parties = """CREATE TABLE IF NOT EXISTS parties (
                 party_id SERIAL PRIMARY KEY NOT NULL,

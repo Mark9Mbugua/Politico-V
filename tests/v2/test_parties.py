@@ -173,7 +173,7 @@ class TestBadRequestCase(TestElectionsCase):
         token = self.admin_token()
         response = self.client.post('/api/v2/parties', data=json.dumps(self.logoUrl_blank), content_type='application/json', headers=token)
         result = json.loads(response.data)
-        self.assertEqual(result['Error'], "logoUrl should be in the format 'https://www.twitter.com/profile/img.jpg'")
+        self.assertEqual(result['Error'], "logoUrl should be in the example format 'https://www.twitter.com/profile/img.jpg'")
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
     
@@ -182,7 +182,7 @@ class TestBadRequestCase(TestElectionsCase):
         token = self.admin_token()
         response = self.client.post('/api/v2/parties', data=json.dumps(self.logoUrl_no_scheme), content_type='application/json', headers=token)
         result = json.loads(response.data)
-        self.assertEqual(result['Error'], "logoUrl should be in the format 'https://www.twitter.com/profile/img.jpg'")
+        self.assertEqual(result['Error'], "logoUrl should be in the example format 'https://www.twitter.com/profile/img.jpg'")
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
     
@@ -191,7 +191,7 @@ class TestBadRequestCase(TestElectionsCase):
         token = self.admin_token()
         response = self.client.post('/api/v2/parties', data=json.dumps(self.logoUrl_no_netloc), content_type='application/json', headers=token)
         result = json.loads(response.data)
-        self.assertEqual(result['Error'], "logoUrl should be in the format 'https://www.twitter.com/profile/img.jpg'")
+        self.assertEqual(result['Error'], "logoUrl should be in the example format 'https://www.twitter.com/profile/img.jpg'")
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
     
@@ -200,7 +200,7 @@ class TestBadRequestCase(TestElectionsCase):
         token = self.admin_token()
         response = self.client.post('/api/v2/parties', data=json.dumps(self.logoUrl_no_path), content_type='application/json', headers=token)
         result = json.loads(response.data)
-        self.assertEqual(result['Error'], "logoUrl should be in the format 'https://www.twitter.com/profile/img.jpg'")
+        self.assertEqual(result['Error'], "logoUrl should be in the example format 'https://www.twitter.com/profile/img.jpg'")
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
     
@@ -230,7 +230,7 @@ class TestBadRequestCase(TestElectionsCase):
         result = json.loads(response.data)
         response = self.client.patch('/api/v2/parties/2', data=json.dumps(self.party_name_not_purely_alpha_and_space), content_type='application/json', headers=token)
         result = json.loads(response.data)
-        self.assertEqual(result['Error'], 'Name should only have letters and spaces')
+        self.assertEqual(result['Error'], 'Name should also have letters and spaces')
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
     

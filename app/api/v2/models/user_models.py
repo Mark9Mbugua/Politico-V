@@ -7,7 +7,6 @@ from passlib.hash import pbkdf2_sha256 as sha256
 from psycopg2.extras import RealDictCursor
 import itertools
 
-
 class User():
     def __init__(self):
         self.db = init_db()
@@ -71,8 +70,7 @@ class User():
         data = cur.fetchone()
         email = data[0]
         return email
-   
-   
+    
     def userIsValid(self, username):
         cur = self.db.cursor()
         cur.execute("""SELECT user_id, firstname, lastname, username, email, password FROM users WHERE username= %s""", (username, ))
@@ -139,11 +137,6 @@ class User():
         cur.execute("SELECT * from users WHERE user_id = {}".format(user_id))
         user = cur.fetchall()
         return user
-    
-    def is_digit(self, data):
-        if isinstance(data, int):
-            return True
-        return False
 
     @staticmethod
     def generate_hash(password):

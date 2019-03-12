@@ -8,22 +8,22 @@ class PoliticalOffices():
     
     #serializes data into json object format
     def serializer(self, office):
-        office_fields = ('office_id', 'office_name', 'office_type')
+        office_fields = ('office_id', 'office_name', 'office_type', 'location')
         result = dict()
         for index, field in enumerate(office_fields):
             result[field] = office[index]
         return result
     
     def serializer_two(self, office_details):
-        office_id, office_name, office_type = office_details
-        result = dict(office_id = office_id, office_name = office_name, office_type = office_type)
+        office_id, office_name, office_type, location = office_details
+        result = dict(office_id = office_id, office_name = office_name, office_type = office_type, location = location)
         return result
     
-    def create_office(self, office_name, office_type):
+    def create_office(self, office_name, office_type, location):
         cur = self.db.cursor()
-        query = """INSERT INTO offices(office_name, office_type)
-                VALUES (%s,%s) RETURNING office_id"""
-        content = (office_name, office_type)
+        query = """INSERT INTO offices(office_name, office_type, location)
+                VALUES (%s,%s, %s) RETURNING office_id"""
+        content = (office_name, office_type, location)
         cur.execute(query, content)
         office = cur.fetchone()
         self.db.commit()
@@ -36,17 +36,16 @@ class PoliticalOffices():
         office = cur.fetchall()
         return office
     
-    def check_office_exists_by_name(self, office_name):
+    def check_office_exists_by_name(self, office_name, location):
         cur = self.db.cursor()
-        cur.execute("""SELECT * FROM offices WHERE office_name= '{}'""".format(office_name))
+        cur.execute("""SELECT * FROM offices WHERE office_name= '{}' and location = '{}'""".format(office_name, location))
         office = cur.fetchall()
         return office
 
-
     def get_all_offices(self):
         cur = self.db.cursor()
-        query = """SELECT office_id, office_name, office_type FROM offices"""
-        columns = ('office_id', 'office_name', 'office_type')
+        query = """SELECT office_id, office_name, office_type, location FROM offices"""
+        columns = ('office_id', 'office_name', 'office_type', 'location')
         cur.execute(query)
         office_details = cur.fetchall()
         if office_details:
