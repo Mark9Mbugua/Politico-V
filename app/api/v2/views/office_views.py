@@ -1,9 +1,9 @@
 from flask import Flask, jsonify,request, Blueprint, make_response
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from app.api.v2.models.office_models import PoliticalOffices
 from app.api.v2.models.user_models import User
 from app.api.v2.utils.validators import Validators
 from app.api.v2.utils.serializer import Serializer
-from flask_jwt_extended import get_jwt_identity, jwt_required
 
 ov2 = Blueprint('ap3', __name__, url_prefix='/api/v2')
 
