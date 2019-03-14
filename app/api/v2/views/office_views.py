@@ -68,31 +68,6 @@ def get_office(office_id):
     
     abort(Serializer.error_fn(404, 'Political office cannot be found'))
 
-@ov2.route('/offices/<int:office_id>', methods=['PATCH'])
-@jwt_required
-def update_office(office_id):
-    if User().i_am_admin(get_jwt_identity()):
-        try:
-            data = request.get_json()
-            office_name = data['office_name']
-        except KeyError:
-            abort(Serializer.error_fn(400, 'Office name key is missing'))
-
-        edit_office = PoliticalOffices().edit_office(office_id, office_name)
-        if edit_office:
-            if office_name == "" or office_name.isspace():
-                abort(Serializer.error_fn(400, 'Office name is required'))
-            
-            if not all(x.isalpha() or x.isspace() for x in office_name):
-                abort(Serializer.error_fn(400, 'Name should only have letters and spaces'))
-            
-            return Serializer.json_success('Political office updated successfully', edit_office, 200), 200
-        
-        abort(Serializer.error_fn(404, 'Political office cannot be found'))
-
-    abort(Serializer.error_fn(401, 'User not authorized to make this request'))
-    
-
 @ov2.route('/offices/<int:office_id>', methods=['DELETE'])
 @jwt_required
 def delete_office(office_id):
