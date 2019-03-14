@@ -96,10 +96,10 @@ def delete_party(party_id):
         party = PoliticalParties().get_one_party(party_id)
         delete_party = PoliticalParties().delete_party(party_id)
        
-        if party:
-            return Serializer.json_success('Political Party deleted successfully', delete_party, 200), 200
-        
-        abort(Serializer.error_fn(404, 'Political party cannot be found'))
+        if not party:
+            abort(Serializer.error_fn(404, 'Political party cannot be found'))
+
+        return Serializer.json_success('Political Party deleted successfully', delete_party, 200), 200
         
     abort(Serializer.error_fn(401, 'User not authorized to make this request'))
     
