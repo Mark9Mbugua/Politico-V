@@ -11,7 +11,6 @@ ov2 = Blueprint('ap3', __name__, url_prefix='/api/v2')
 @jwt_required
 def post_office():
     if User().i_am_admin(get_jwt_identity()):
-        types_of_offices = ['Legislative', 'Executive', 'County']
         data = request.get_json()
         try:
             office_name = data["office_name"]
@@ -21,47 +20,29 @@ def post_office():
         except KeyError:
             return Serializer.json_error('One or more keys is missing', 400), 400
         
-        if Validators().is_str(office_type) == False:
-            return Serializer.json_error('Office type should be in string format', 400), 400
-        
-        if Validators().is_str(office_name) == False:
-            return Serializer.json_error('Name should be in string format', 400), 400
-        
-        if Validators().is_str(location) == False:
-            return Serializer.json_error('Location should be in string format', 400), 400
-        
-        if Validators().is_digit(office_name) == True:
-            return Serializer.json_error('Name should only have letters', 400), 400
-        
-        if Validators().is_digit(office_type) == True:
-            return Serializer.json_error('Office type should only have letters', 400), 400
-        
-        if Validators().is_digit(location) == True:
-            return Serializer.json_error('Location should only have letters', 400), 400
-        
-        if Validators().is_empty(office_type) == True:
-            return Serializer.json_error('Office type is required', 400), 400
-        
-        if Validators().is_empty(office_name) == True:
-            return Serializer.json_error('Office name is required', 400), 400
-        
-        if Validators().is_empty(location) == True:
-            return Serializer.json_error('Location is required', 400), 400
-        
-        if Validators().valid_office_type(office_type, types_of_offices) == False:
-            return Serializer.json_error('Office type must either be Legislative, Executive or County', 400), 400
+        types_of_offices = ['Legislative', 'Executive', 'County']
 
-        if Validators().valid_legilative_office(office_type, office_name) == False:
-            return Serializer.json_error('Only a Senator, Member of Parliament or a Women Rep can occupy a legislative office', 400), 400
+        """Check if fields are strings"""
+        Validators().is_str_or_int(office_type, office_name, location)
         
-        if Validators().valid_executive_office(office_type, office_name) == False:
-            return Serializer.json_error('Only the President or the Prime Minister can occupy an executive office', 400), 400
+        """Check if fields have digits"""
+        Validators().is_digit(office_name, office_type, location)
         
-        if Validators().valid_executive_location(office_type, location) == False:
-            return Serializer.json_error('The location of an executive office can only be Kenya', 400), 400
+        """Checks if fields are empty"""
+        Validators().is_space_or_empty(office_type, office_name, location, 
+        office_type=office_type, office_name=office_name, location=location)
+        
+        """Checks if office type is valid"""
+        Validators().valid_office_type(office_type, types_of_offices)
 
-        if Validators().valid_county_office(office_type, office_name) == False:
-            return Serializer.json_error('Only a Governor or an MCA can occupy a county office', 400), 400
+        """Checks if office type matches office name"""
+        Validators().valid_legilative_office(office_type, office_name)
+
+        Validators().valid_executive_office(office_type, office_name)
+        
+        Validators().valid_executive_location(office_type, location)
+
+        Validators().valid_county_office(office_type, office_name)
 
         if PoliticalOffices().check_office_exists_by_name(office_name, location):
                 return Serializer.json_error('Political office already exists', 400), 400

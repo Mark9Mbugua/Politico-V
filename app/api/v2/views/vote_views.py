@@ -30,11 +30,8 @@ def vote():
         except KeyError:
             return Serializer.json_error('One or more keys is missing', 400), 400
         
-        if Validators().is_str(office) == True:
-            return Serializer.json_error('Office should be a number', 400), 400       
-        
-        if Validators().is_str(candidate) == True:
-            return Serializer.json_error('Candidate should be a number', 400), 400
+        """Checks if fields are integers"""
+        Validators().is_int(office, candidate) 
         
         if not User().find_by_user_id(candidate):
             return Serializer.json_error('User does not exist', 400), 400

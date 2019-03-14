@@ -23,32 +23,21 @@ def post_party():
         except KeyError:
             return Serializer.json_error('One or more keys is missing', 400), 400
         
-        if Validators().is_str(party_name) == False:
-            return Serializer.json_error('Name should be in string format', 400), 400
+        """Check if fields are strings"""
+        Validators().is_str_or_int(party_name, hqAddress, logoUrl)
         
-        if Validators().is_str(hqAddress) == False:
-            return Serializer.json_error('hqAddress should be in string format', 400), 400
-        
-        if Validators().is_digit(hqAddress) == True:
-            return Serializer.json_error('hqAddress should have letters too', 400), 400
+        """Check if hqAddress are has both digits and letters"""
+        Validators().is_digit_or_letter(hqAddress)
 
-        if Validators().is_alpha_or_space(party_name) == False:
-            return Serializer.json_error('Name should also have letters and spaces', 400), 400
+        """Check if party name has letters and spaces"""
+        Validators().is_alpha_or_space(party_name)
 
-        if Validators().is_empty(party_name) == True:
-            return Serializer.json_error('Party name is required', 400), 400
+        """Checks if fields are empty"""
+        Validators().is_space_or_empty(party_name, hqAddress, logoUrl, 
+        party_name=party_name, hqAddress=hqAddress, logoUrl=logoUrl)
         
-        if Validators().is_empty(hqAddress) == True:
-            return Serializer.json_error('hqAddress is required', 400), 400
-        
-        if Validators().is_str(logoUrl) == False:
-            return Serializer.json_error('logoUrl should be in string format', 400), 400
-        
-        if Validators().is_empty(logoUrl) == True:
-            return Serializer.json_error('logoUrl is required', 400), 400
-        
-        if Validators().valid_logo_url(logoUrl) == False:
-            return Serializer.json_error("logoUrl should be in the example format 'https://www.twitter.com/profile/img.jpg'", 400), 400
+        """Checks if logo url is valid"""
+        Validators().valid_logo_url(logoUrl)
 
         if PoliticalParties().check_party_exists_by_name(party_name):
             return Serializer.json_error('Political party already exists', 400), 400

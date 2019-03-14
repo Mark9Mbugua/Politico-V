@@ -5,9 +5,9 @@ from app.api.v2.models.office_models import PoliticalOffices
 from app.api.v2.utils.validators import Validators
 from app.api.v2.utils.serializer import Serializer
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+import psycopg2
 
 uv2 = Blueprint('up1', __name__, url_prefix='/api/v2')
-
 
 @uv2.route('/auth/signup', methods=['POST'])
 def post_user():
@@ -18,93 +18,41 @@ def post_user():
         firstname = data['firstname']
         lastname = data['lastname']
         username = data['username']
-        phone = data['phone']
         password = data['password']
+        try:
+            phone = data['phone']
+        except Exception as e:
+            return Serializer.json_error(e, 400), 400
         
     except KeyError:
-        return Serializer.json_error('One or more keys is missing', 400), 400
+        return Serializer.json_error('Check if all fields exist', 400), 400
 
-    if Validators().is_str(firstname) == False:
-        return Serializer.json_error('First name should be in string format', 400), 400
-        
-    if Validators().is_str(email) == False:
-        return Serializer.json_error('Email Address should be in string format', 400), 400
-    
-    if Validators().is_str(lastname) == False:
-        return Serializer.json_error('Last name should be in string format', 400), 400
-    
-    if Validators().is_str(username) == False:
-        return Serializer.json_error('Username should be in string format', 400), 400
-    
-    if Validators().is_str(password) == False:
-        return Serializer.json_error('Password should be in string format', 400), 400
-    
-    if Validators().is_str(phone) == False:
-        return Serializer.json_error('Phone number should be in string format', 400), 400
+    """Checks if fields are either of type string or integer"""
+    Validators().is_str_or_int(firstname, lastname, username, password, phone)
 
-    if Validators().is_digit(firstname) == True:
-        return Serializer.json_error('First name should only have letters', 400), 400
+    """Checks if fields are empty"""
+    Validators().is_space_or_empty(firstname, lastname, username, email, phone, password,
+    firstname=firstname, lastname=lastname,username=username, email=email, phone=phone, password=password)
     
-    if Validators().is_digit(lastname) == True:
-        return Serializer.json_error('Last name should only have letters', 400), 400
-    
-    if Validators().is_digit(phone) == False:
-        return Serializer.json_error('Phone number should only have digits', 400), 400
-    
-    if Validators().is_empty(firstname) == True:
-        return Serializer.json_error('First name is required', 400), 400
-    
-    if Validators().is_empty(lastname) == True:
-        return Serializer.json_error('Last name is required', 400), 400
-    
-    if Validators().is_empty(username) == True:
-        return Serializer.json_error('Username is required', 400), 400
-    
-    if Validators().is_empty(email) == True:
-        return Serializer.json_error('Email address is required', 400), 400
-    
-    if Validators().is_empty(phone) == True:
-        return Serializer.json_error('Phone number is required', 400), 400
-    
-    if Validators().is_empty(password) == True:
-        return Serializer.json_error('Password is required', 400), 400
+    """Checks if firstname and lastname contain any digits"""
+    Validators().is_digit(firstname, lastname)
+   
+    """Checks if phone number contain any digits"""
+    Validators().is_not_digit(phone)
 
-    if Validators().is_space(firstname) == True:
-        return Serializer.json_error('First name should not have spaces', 400), 400
+    """Checks if field content has spaces in between"""
+    Validators().has_space(firstname, lastname, username, password, phone)
     
-    if Validators().is_space(lastname) == True:
-        return Serializer.json_error('Last name should not have spaces', 400), 400
+    """Checks if password is valid"""
+    Validators().check_valid_password(password)
     
-    if Validators().is_space(username) == True:
-        return Serializer.json_error('Username should not have spaces', 400), 400
+    """Checks if email is valid"""
+    Validators().valid_email(email)
     
-    if Validators().is_space(password) == True:
-        return Serializer.json_error('Password should not have spaces', 400), 400
-    
-    if Validators().is_space(phone) == True:
-        return Serializer.json_error('Phone number should not have spaces', 400), 400
-    
-    if Validators().password_short(password) == True:
-        return Serializer.json_error('Password should have at least 8 characters', 400), 400
-    
-    if Validators().caps_password(password) == True:
-        return Serializer.json_error('Password should have atleast one capital letter', 400), 400
-    
-    if Validators().small_letter_password(password) == True:
-        return Serializer.json_error('Password should have atleast one lowercase letter', 400), 400
-    
-    if Validators().integer_password(password) == True:
-        return Serializer.json_error('Password should have atleast one number', 400), 400
-    
-    if Validators().valid_email(email) == False:
-        return Serializer.json_error('Email address is invalid.\
-            Kindly enter a valid email address', 400), 400
-    
-    if Validators().short_phone_no(phone) == True:
-        return Serializer.json_error('Phone number should have 12 digits \
-            starting with the country code for example: 254712345678', 400), 400
-    
-    if User().userIsValid(username) == True:
+    """Checks if phone number is valid"""
+    Validators().valid_phone_number(phone)
+
+    if User().get_user_by_username(username):
         return Serializer.json_error('user already exists', 400), 400
 
     password = User().generate_hash(password)
@@ -121,7 +69,7 @@ def login():
     except KeyError:
         return Serializer.json_error('One or more keys is missing', 400), 400
 
-    if User().userIsValid(username) == True:
+    if User().get_user_by_username(username):
         if User().password_is_valid(username, password) == True:
             access_token = User().user_login(username)
 

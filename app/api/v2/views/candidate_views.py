@@ -23,15 +23,9 @@ def post_candidate(office_id):
         except KeyError:
             return Serializer.json_error('One or more keys is missing', 400), 400
         
-        if Validators().is_str(party) == True:
-            return Serializer.json_error('Party should be a number', 400), 400
-
-        if Validators().is_str(candidate) == True:
-            return Serializer.json_error('Candidate should be a number', 400), 400        
-        
-        if Validators().is_str(office_id) == True:
-            return Serializer.json_error('Office should be a number', 400), 400
-        
+        """Checks if fields are integers"""
+        Validators().is_int(party, candidate, office_id)
+       
         # cannot register admin as a candidate
         if User().get_admin_by_id(candidate):
             return Serializer.json_error('You are not authorized to register admin as a candidate', 400), 400

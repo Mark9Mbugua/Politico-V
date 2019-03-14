@@ -6,7 +6,7 @@ class PoliticalOffices():
     def __init__(self):
         self.db = init_db()
     
-    #serializes data into json object format
+    """serializes data into json object format"""
     def serializer(self, office):
         office_fields = ('office_id', 'office_name', 'office_type', 'location')
         result = dict()
