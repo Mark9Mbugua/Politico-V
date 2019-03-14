@@ -2,7 +2,6 @@ from flask import abort, Flask, jsonify, request, make_response, Blueprint
 from app.api.v2.models.party_models import PoliticalParties
 from app.api.v2.models.user_models import User
 from app.api.v2.utils.validators import Validators
-from app.api.v2.utils.logo_validator import LogoUrlValidator
 from app.api.v2.utils.serializer import Serializer
 from flask_jwt_extended import get_jwt_identity, jwt_required
 

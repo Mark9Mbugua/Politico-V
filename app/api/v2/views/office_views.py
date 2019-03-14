@@ -75,10 +75,10 @@ def update_office(office_id):
         try:
             data = request.get_json()
             office_name = data['office_name']
-            edit_office = PoliticalOffices().edit_office(office_id, office_name)
         except KeyError:
             abort(Serializer.error_fn(400, 'Office name key is missing'))
 
+        edit_office = PoliticalOffices().edit_office(office_id, office_name)
         if edit_office:
             if office_name == "" or office_name.isspace():
                 abort(Serializer.error_fn(400, 'Office name is required'))
