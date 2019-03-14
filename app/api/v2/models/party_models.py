@@ -1,94 +1,53 @@
 from app.db_config import init_db
+from psycopg2.extras import RealDictCursor
 import psycopg2
-import itertools
+
 
 class PoliticalParties():
     def __init__(self):
         self.db = init_db()
-    
-    #serializes data into json object format
-    
-    def serializer(self, party):
-        party_fields = ('party_id', 'party_name', 'hqAddress', 'logoUrl')
-        result = dict()
-        for index, field in enumerate(party_fields):
-            result[field] = party[index]
-        return result
-    
-    def serializer_two(self, party_details):
-        party_id, party_name, hqAddress, logoUrl = party_details
-        result = dict(party_id=party_id, party_name=party_name, hqAddress=hqAddress, logoUrl=logoUrl)
-        return result
+        self.cur = self.db.cursor(cursor_factory=RealDictCursor)
 
     def create(self, party_name, hqAddress, logoUrl):
-        cur = self.db.cursor()
         query = """INSERT INTO parties(party_name, hqAddress, logoUrl)
-                VALUES (%s,%s,%s) RETURNING party_id"""
+                VALUES (%s,%s,%s) RETURNING party_id, party_name, hqAddress, logoUrl"""
         content = (party_name, hqAddress, logoUrl)
-        cur.execute(query, content)
-        party_id = cur.fetchone()
+        self.cur.execute(query, content)
         self.db.commit()
-        cur.close()
-        return self.serializer(tuple(itertools.chain(party_id, content)))
+        party = self.cur.fetchone()
+        return party
     
     def check_party_exists(self, party_id):
-        cur = self.db.cursor()
-        cur.execute("""SELECT * FROM parties WHERE party_id= '{}'""".format(party_id))
-        party = cur.fetchall()
+        self.cur.execute("""SELECT * FROM parties WHERE party_id= '{}'""".format(party_id))
+        party = self.cur.fetchall()
         return party
     
     def check_party_exists_by_name(self, party_name):
-        cur = self.db.cursor()
-        cur.execute("""SELECT * FROM parties WHERE party_name= '{}'""".format(party_name))
-        party = cur.fetchall()
+        self.cur.execute("""SELECT * FROM parties WHERE party_name= '{}'""".format(party_name))
+        party = self.cur.fetchall()
         return party
-
-    
+  
     def get_all_parties(self):
-        cur = self.db.cursor()
-        query = """SELECT party_id, party_name, hqAddress, logoUrl FROM parties"""
-        columns = ('party_id', 'party_name', 'hqAddress', 'logoUrl')
-        cur.execute(query)
-        party_details = cur.fetchall()
-        if party_details:
-            parties = []
-            for detail in party_details:
-                party_values = []
-                for value in detail:
-                    party_values.append(str(value))
-                parties.append(dict(zip(columns, party_values)))
-            return parties
-        return None
-
+        self.cur.execute("SELECT * from parties")
+        party_list = self.cur.fetchall()
+        return party_list
 
     def get_one_party(self, party_id):
-        cur = self.db.cursor()
-        query = """SELECT * FROM parties WHERE party_id = {}""".format(party_id, )
-        cur.execute(query)
-        party = cur.fetchone()
-        cur.close()
-        if party:
-            return self.serializer_two(party)
-        return None
+        self.cur.execute("""SELECT * FROM parties WHERE party_id = {}""".format(party_id))
+        party = self.cur.fetchone()
+        return party
     
     def edit_party(self, party_id, party_name):
-        cur = self.db.cursor()
-        query = """UPDATE parties SET party_name = '{}' WHERE party_id = '{}' RETURNING party_name""".format(party_name, party_id)
-        cur.execute(query)
+        self.cur.execute(
+            """UPDATE parties SET party_name = '{}' WHERE party_id = '{}' RETURNING party_name""".format(party_name, party_id)
+            )
         self.db.commit()
-        name = cur.fetchone()
-        cur.close()
-        if name:
-            name_change = name
-            new_name = dict(name_change=name_change)
-            return new_name
-        return None
+        name = self.cur.fetchone()
+        self.cur.close()
+        return name
     
     def delete_party(self, party_id):
-        cur = self.db.cursor()
-        query = """DELETE FROM parties WHERE party_id = '{}'""".format(party_id, )
-        cur.execute(query)
+        self.cur.execute("""DELETE FROM parties WHERE party_id = '{}'""".format(party_id))
         self.db.commit()
-        cur.close()
-        return None
+        self.cur.close()
 

@@ -17,7 +17,7 @@ def vote():
     current_user = get_jwt_identity()
     if not User().i_am_admin(current_user):  
         try:
-            user_id = current_user
+            user_id = current_user["user_id"]
         
         except KeyError:
             abort(Serializer.error_fn(400, 'You are not registered'))

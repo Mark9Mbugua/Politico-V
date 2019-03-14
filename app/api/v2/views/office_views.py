@@ -73,10 +73,10 @@ def get_office(office_id):
 def delete_office(office_id):
     if User().i_am_admin(get_jwt_identity()):
         office = PoliticalOffices().get_one_office(office_id)
-        delete_office = PoliticalOffices().delete_office(office_id)
-       
+
         if office:
-            return Serializer.json_success('Political Office deleted successfully', delete_office, 200), 200
+            return Serializer.json_success('Political Office deleted successfully',\
+                 PoliticalOffices().delete_office(office_id), 200), 200
         
         abort(Serializer.error_fn(404, 'Political office cannot be found'))
         
