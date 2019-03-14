@@ -33,10 +33,10 @@ def post_candidate(office_id):
         if not User().find_by_user_id(candidate):
             abort(Serializer.error_fn(404, 'Candidate does not exist'))
 
-        if not PoliticalOffices().check_office_exists(office_id):
+        if not PoliticalOffices().get_one_office(office_id):
             abort(Serializer.error_fn(404, 'Office does not exist'))
 
-        if not PoliticalParties().check_party_exists(party):
+        if not PoliticalParties().get_one_party(party):
             abort(Serializer.error_fn(404, 'Party does not exist'))
                 
         if Candidate().check_candidate_registered(candidate, office_id):

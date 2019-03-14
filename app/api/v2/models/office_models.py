@@ -2,7 +2,6 @@ from app.db_config import init_db
 from psycopg2.extras import RealDictCursor
 import psycopg2
 
-
 class PoliticalOffices():
     def __init__(self):
         self.db = init_db()
@@ -16,11 +15,6 @@ class PoliticalOffices():
         office = self.cur.fetchone()
         self.db.commit()
         self.cur.close()
-        return office
-
-    def check_office_exists(self, office_id):
-        self.cur.execute("""SELECT * FROM offices WHERE office_id= '{}'""".format(office_id))
-        office = self.cur.fetchall()
         return office
     
     def check_office_exists_by_name(self, office_name, location):

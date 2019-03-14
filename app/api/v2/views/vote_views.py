@@ -36,7 +36,7 @@ def vote():
         if not User().find_by_user_id(candidate):
             abort(Serializer.error_fn(400, 'User does not exist'))
 
-        if not PoliticalOffices().check_office_exists(office):
+        if not PoliticalOffices().get_one_office(office):
             abort(Serializer.error_fn(400, 'Office does not exist'))
 
         candidate_registered = Candidate().check_candidate_registered(candidate, office)

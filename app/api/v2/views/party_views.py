@@ -95,12 +95,12 @@ def update_party(party_id):
 def delete_party(party_id):
     if User().i_am_admin(get_jwt_identity()):
         party = PoliticalParties().get_one_party(party_id)
-        delete_party = PoliticalParties().delete_party(party_id)
        
         if not party:
             abort(Serializer.error_fn(404, 'Political party cannot be found'))
 
-        return Serializer.json_success('Political Party deleted successfully', delete_party, 200), 200
+        return Serializer.json_success('Political Party deleted successfully', \
+             PoliticalParties().delete_party(party_id), 200), 200
         
     abort(Serializer.error_fn(401, 'User not authorized to make this request'))
     
