@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, Blueprint
+from flask import abort, Flask, jsonify, request, make_response, Blueprint
 from app.api.v2.models.party_models import PoliticalParties
 from app.api.v2.models.user_models import User
 from app.api.v2.utils.validators import Validators
@@ -21,7 +21,7 @@ def post_party():
             logoUrl = data['logoUrl']
         
         except KeyError:
-            return Serializer.json_error('One or more keys is missing', 400), 400
+            abort(Serializer.error_fn(400, 'Check if all fields exist'))
         
         """Check if fields are strings"""
         Validators().is_str_or_int(party_name, hqAddress, logoUrl)
@@ -40,13 +40,13 @@ def post_party():
         Validators().valid_logo_url(logoUrl)
 
         if PoliticalParties().check_party_exists_by_name(party_name):
-            return Serializer.json_error('Political party already exists', 400), 400
+            abort(Serializer.error_fn(400, 'Political party already exists'))
         
         party = PoliticalParties().create(party_name, hqAddress, logoUrl)
         
         return Serializer.json_success('Political party created successfully', party, 201), 201      
 
-    return Serializer.json_error('User not authorized to make this request', 401), 401
+    abort(Serializer.error_fn(401, 'User not authorized to make this request'))
 
 @pv2.route('/parties', methods=['GET'])
 def get_parties():
@@ -54,7 +54,7 @@ def get_parties():
     if parties:
         return Serializer.json_success('All political parties retrieved successfully', parties, 200), 200
     
-    return Serializer.json_error('Political parties cannot be found', 404), 404
+    abort(Serializer.error_fn(400, 'Political parties cannot be found'))
 
 @pv2.route('/parties/<int:party_id>', methods=['GET'])
 def get_party(party_id):
@@ -62,7 +62,7 @@ def get_party(party_id):
     if party:
        return Serializer.json_success('Political party retrieved successfully', party, 200), 200
     
-    return Serializer.json_error('Political party cannot be found', 404), 404
+    abort(Serializer.error_fn(404, 'Political party cannot be found'))
 
 
 @pv2.route('/parties/<int:party_id>', methods=['PATCH'])
@@ -74,20 +74,20 @@ def update_party(party_id):
             party_name = data['party_name']
             edit_party = PoliticalParties().edit_party(party_id, party_name)
         except KeyError:
-            return Serializer.json_error('Party name key is missing', 400), 400
+            abort(Serializer.error_fn(400, 'Party name key is missing'))
 
         if edit_party:
             if party_name == "" or party_name.isspace():
-                return Serializer.json_error('Party name is required', 400), 400
+                abort(Serializer.error_fn(400, 'Party name is required'))
             
             if not all(x.isalpha() or x.isspace() for x in party_name):
-                return Serializer.json_error('Name should only have letters and spaces', 400), 400
+                abort(Serializer.error_fn(400, 'Name should only have letters and spaces'))
             
             return Serializer.json_success('Political party updated successfully', edit_party, 200), 200
         
-        return Serializer.json_error('Political party cannot be found', 404), 404
+        abort(Serializer.error_fn(404, 'Political party cannot be found'))
 
-    return Serializer.json_error('User not authorized to make this request', 401), 401
+    abort(Serializer.error_fn(401, 'User not authorized to make this request'))
     
 
 @pv2.route('/parties/<int:party_id>', methods=['DELETE'])
@@ -100,7 +100,7 @@ def delete_party(party_id):
         if party:
             return Serializer.json_success('Political Party deleted successfully', delete_party, 200), 200
         
-        return Serializer.json_error('Political party cannot be found', 404), 404
+        abort(Serializer.error_fn(404, 'Political party cannot be found'))
         
-    return Serializer.json_error('User not authorized to make this request', 401), 401
+    abort(Serializer.error_fn(401, 'User not authorized to make this request'))
     

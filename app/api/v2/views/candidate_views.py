@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, Blueprint
+from flask import Flask, abort, jsonify, request, make_response, Blueprint
 from app.api.v2.models.candidate_models import Candidate
 from app.api.v2.models.user_models import User 
 from app.api.v2.models.party_models import PoliticalParties
@@ -21,14 +21,14 @@ def post_candidate(office_id):
             candidate = data['candidate']
             
         except KeyError:
-            return Serializer.json_error('One or more keys is missing', 400), 400
+            abort(Serializer.error_fn(400, 'Check if all fields exist'))
         
         """Checks if fields are integers"""
         Validators().is_int(party, candidate, office_id)
        
-        # cannot register admin as a candidate
+        """cannot register admin as a candidate"""
         if User().get_admin_by_id(candidate):
-            return Serializer.json_error('You are not authorized to register admin as a candidate', 400), 400
+            abort(Serializer.error_fn(400, 'You are not authorized to register admin as a candidate'))
   
         if User().find_by_user_id(candidate):
 
@@ -42,13 +42,13 @@ def post_candidate(office_id):
 
                         return Serializer.json_success('Candidate registered successfully', candidate, 201), 201
 
-                    return Serializer.json_error('Candidate is already registered', 400), 400
+                    abort(Serializer.error_fn(400, 'Candidate is already registered'))
 
-                return Serializer.json_error('Party does not exist', 404), 404
+                abort(Serializer.error_fn(404, 'Party does not exist'))
                 
-            return Serializer.json_error('Office does not exist', 404), 404
+            abort(Serializer.error_fn(404, 'Office does not exist'))
 
-        return Serializer.json_error('Candidate does not exist', 404), 404
+        abort(Serializer.error_fn(404, 'Candidate does not exist'))
 
-    return Serializer.json_error('User not authorized to make this request', 401), 401
+    abort(Serializer.error_fn(401, 'User not authorized to make this request'))
     

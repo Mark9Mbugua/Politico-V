@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, Blueprint
+from flask import abort, Flask, jsonify, request, make_response, Blueprint
 from app.api.v2.models.user_models import User
 from app.api.v2.models.party_models import PoliticalParties
 from app.api.v2.models.office_models import PoliticalOffices
@@ -19,13 +19,10 @@ def post_user():
         lastname = data['lastname']
         username = data['username']
         password = data['password']
-        try:
-            phone = data['phone']
-        except Exception as e:
-            return Serializer.json_error(e, 400), 400
+        phone = data['phone']
         
     except KeyError:
-        return Serializer.json_error('Check if all fields exist', 400), 400
+        abort(Serializer.error_fn(400, 'Check if all fields exist'))
 
     """Checks if fields are either of type string or integer"""
     Validators().is_str_or_int(firstname, lastname, username, password, phone)
@@ -53,7 +50,7 @@ def post_user():
     Validators().valid_phone_number(phone)
 
     if User().get_user_by_username(username):
-        return Serializer.json_error('user already exists', 400), 400
+        abort(Serializer.error_fn(400, 'user already exists'))
 
     password = User().generate_hash(password)
     new_user = User().register(firstname, lastname, username, email, phone, password)
@@ -67,7 +64,7 @@ def login():
         username = data['username']
         password = data['password']
     except KeyError:
-        return Serializer.json_error('One or more keys is missing', 400), 400
+        abort(Serializer.error_fn(400, 'Check if all fields exist'))
 
     if User().get_user_by_username(username):
         if User().password_is_valid(username, password) == True:
@@ -76,7 +73,7 @@ def login():
             if access_token:
                 return Serializer.signup_success('You are now logged in', access_token, 201), 201
             
-        return Serializer.json_error('Check if credentials are correct', 400), 400
+        abort(Serializer.error_fn('Check if credentials are correct', 400))
     
-    return Serializer.json_error('User does not exist', 404), 404
+    abort(Serializer.error_fn('User does not exist', 404))
 

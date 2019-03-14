@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, Blueprint
+from flask import abort, Flask, jsonify, request, make_response, Blueprint
 from app.api.v2.models.vote_models import Vote
 from app.api.v2.models.candidate_models import Candidate
 from app.api.v2.models.office_models import PoliticalOffices
@@ -20,7 +20,7 @@ def vote():
             user_id = current_user
         
         except KeyError:
-            return Serializer.json_error('You are not registered', 400), 400
+            abort(Serializer.error_fn(400, 'You are not registered'))
         
         try:
             data = request.get_json()
@@ -28,29 +28,29 @@ def vote():
             candidate = data['candidate']   
 
         except KeyError:
-            return Serializer.json_error('One or more keys is missing', 400), 400
+            abort(Serializer.error_fn(400, 'Check if all fields exist'))
         
         """Checks if fields are integers"""
         Validators().is_int(office, candidate) 
         
         if not User().find_by_user_id(candidate):
-            return Serializer.json_error('User does not exist', 400), 400
+            abort(Serializer.error_fn(400, 'User does not exist'))
 
         if not PoliticalOffices().check_office_exists(office):
-            return Serializer.json_error('Office does not exist', 400), 400
+            abort(Serializer.error_fn(400, 'Office does not exist'))
 
         candidate_registered = Candidate().check_candidate_registered(candidate, office)
         if candidate_registered:
             if Vote().has_voted(office, user_id):
-                return Serializer.json_error('You have already voted for a candidate in this office', 400), 400
+                abort(Serializer.error_fn(400, 'You have already voted for a candidate in this office'))
 
             response = Vote().cast_vote(office, user_id, candidate)
 
             return Serializer.json_success('You successfully cast your vote', response, 201), 201
             
-        return Serializer.json_error('Candidate not registered', 400), 400
+        abort(Serializer.error_fn(400, 'Candidate not registered'))
         
-    return Serializer.json_error('User not authorized to make this request', 401), 401
+    abort(Serializer.error_fn(401, 'User not authorized to make this request'))
 
 
 @vv2.route('/office/<int:office_id>/result', methods=['GET'])

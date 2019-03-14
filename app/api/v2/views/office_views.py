@@ -1,4 +1,4 @@
-from flask import Flask, jsonify,request, Blueprint, make_response
+from flask import abort, Flask, jsonify,request, Blueprint, make_response
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from app.api.v2.models.office_models import PoliticalOffices
 from app.api.v2.models.user_models import User
@@ -45,12 +45,12 @@ def post_office():
         Validators().valid_county_office(office_type, office_name)
 
         if PoliticalOffices().check_office_exists_by_name(office_name, location):
-                return Serializer.json_error('Political office already exists', 400), 400
+            abort(Serializer.error_fn(400, 'Political office already exists'))
 
         office = PoliticalOffices().create_office(office_name, office_type, location)
         return Serializer.json_success('Political office created successfully', office, 201), 201
 
-    return Serializer.json_error('User not authorized to make this request', 401), 401
+    abort(Serializer.error_fn(401, 'User not authorized to make this request'))
 
 @ov2.route('/offices', methods=['GET'])
 def get_all_offices():
@@ -58,7 +58,7 @@ def get_all_offices():
     if offices:     
         return Serializer.json_success('All political offices retrieved successfully', offices, 200), 200
     
-    return Serializer.json_error('Political office cannot be found', 404), 404
+    abort(Serializer.error_fn(404, 'Political office cannot be found'))
 
 @ov2.route('/offices/<int:office_id>', methods=['GET'])
 def get_office(office_id):
@@ -66,7 +66,7 @@ def get_office(office_id):
     if office:
         return Serializer.json_success('Political office retrieved successfully', office, 200), 200
     
-    return Serializer.json_error('Political office cannot be found', 404), 404
+    abort(Serializer.error_fn(404, 'Political office cannot be found'))
 
 @ov2.route('/offices/<int:office_id>', methods=['PATCH'])
 @jwt_required
@@ -77,20 +77,20 @@ def update_office(office_id):
             office_name = data['office_name']
             edit_office = PoliticalOffices().edit_office(office_id, office_name)
         except KeyError:
-            return Serializer.json_error('Office name key is missing', 400), 400
+            abort(Serializer.error_fn(400, 'Office name key is missing'))
 
         if edit_office:
             if office_name == "" or office_name.isspace():
-                return Serializer.json_error('Office name is required', 400), 400
+                abort(Serializer.error_fn(400, 'Office name is required'))
             
             if not all(x.isalpha() or x.isspace() for x in office_name):
-                return Serializer.json_error('Name should only have letters and spaces', 400), 400
+                abort(Serializer.error_fn(400, 'Name should only have letters and spaces'))
             
             return Serializer.json_success('Political office updated successfully', edit_office, 200), 200
         
-        return Serializer.json_error('Political office cannot be found', 404), 404
+        abort(Serializer.error_fn(404, 'Political office cannot be found'))
 
-    return Serializer.json_error('User not authorized to make this request', 401), 401
+    abort(Serializer.error_fn(401, 'User not authorized to make this request'))
     
 
 @ov2.route('/offices/<int:office_id>', methods=['DELETE'])
@@ -103,6 +103,6 @@ def delete_office(office_id):
         if office:
             return Serializer.json_success('Political Office deleted successfully', delete_office, 200), 200
         
-        return Serializer.json_error('Political office cannot be found', 404), 404
+        abort(Serializer.error_fn(404, 'Political office cannot be found'))
         
-    return Serializer.json_error('User not authorized to make this request', 401), 401
+    abort(Serializer.error_fn(401, 'User not authorized to make this request'))
