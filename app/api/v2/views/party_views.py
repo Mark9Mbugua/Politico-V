@@ -71,20 +71,21 @@ def update_party(party_id):
         try:
             data = request.get_json()
             party_name = data['party_name']
-            edit_party = PoliticalParties().edit_party(party_id, party_name)
+        
         except KeyError:
             abort(Serializer.error_fn(400, 'Party name key is missing'))
-
-        if edit_party:
-            if party_name == "" or party_name.isspace():
-                abort(Serializer.error_fn(400, 'Party name is required'))
-            
-            if not all(x.isalpha() or x.isspace() for x in party_name):
-                abort(Serializer.error_fn(400, 'Name should only have letters and spaces'))
-            
-            return Serializer.json_success('Political party updated successfully', edit_party, 200), 200
         
-        abort(Serializer.error_fn(404, 'Political party cannot be found'))
+        edit_party = PoliticalParties().edit_party(party_id, party_name)
+        if not edit_party:
+            abort(Serializer.error_fn(404, 'Political party cannot be found'))
+
+        if party_name == "" or party_name.isspace():
+            abort(Serializer.error_fn(400, 'Party name is required'))
+        
+        if not all(x.isalpha() or x.isspace() for x in party_name):
+            abort(Serializer.error_fn(400, 'Name should only have letters and spaces'))
+        
+        return Serializer.json_success('Political party updated successfully', edit_party, 200), 200
 
     abort(Serializer.error_fn(401, 'User not authorized to make this request'))
     

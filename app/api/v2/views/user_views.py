@@ -67,13 +67,12 @@ def login():
         abort(Serializer.error_fn(400, 'Check if all fields exist'))
 
     if User().get_user_by_username(username):
-        if User().password_is_valid(username, password) == True:
-            access_token = User().user_login(username)
-
-            if access_token:
-                return Serializer.signup_success('You are now logged in', access_token, 201), 201
-            
-        abort(Serializer.error_fn('Check if credentials are correct', 400))
+        if User().password_is_valid(username, password) == False:
+            return Serializer.json_error('Check if credentials are correct', 400), 400
+        
+        access_token = User().user_login(username)
+        if access_token:
+            return Serializer.signup_success('You are now logged in', access_token, 201), 201
     
-    abort(Serializer.error_fn('User does not exist', 404))
+    return Serializer.json_error('User does not exist', 404), 404
 

@@ -30,25 +30,20 @@ def post_candidate(office_id):
         if User().get_admin_by_id(candidate):
             abort(Serializer.error_fn(400, 'You are not authorized to register admin as a candidate'))
   
-        if User().find_by_user_id(candidate):
+        if not User().find_by_user_id(candidate):
+            abort(Serializer.error_fn(404, 'Candidate does not exist'))
 
-            if PoliticalOffices().check_office_exists(office_id):
-
-                if PoliticalParties().check_party_exists(party):
-                
-                    if not Candidate().check_candidate_registered(candidate, office_id):
-
-                        candidate = Candidate().register_candidate(office_id, party, candidate)
-
-                        return Serializer.json_success('Candidate registered successfully', candidate, 201), 201
-
-                    abort(Serializer.error_fn(400, 'Candidate is already registered'))
-
-                abort(Serializer.error_fn(404, 'Party does not exist'))
-                
+        if not PoliticalOffices().check_office_exists(office_id):
             abort(Serializer.error_fn(404, 'Office does not exist'))
 
-        abort(Serializer.error_fn(404, 'Candidate does not exist'))
+        if not PoliticalParties().check_party_exists(party):
+            abort(Serializer.error_fn(404, 'Party does not exist'))
+                
+        if Candidate().check_candidate_registered(candidate, office_id):
+            abort(Serializer.error_fn(400, 'Candidate is already registered'))
+
+        candidate = Candidate().register_candidate(office_id, party, candidate)
+        return Serializer.json_success('Candidate registered successfully', candidate, 201), 201          
 
     abort(Serializer.error_fn(401, 'User not authorized to make this request'))
     

@@ -40,15 +40,14 @@ def vote():
             abort(Serializer.error_fn(400, 'Office does not exist'))
 
         candidate_registered = Candidate().check_candidate_registered(candidate, office)
-        if candidate_registered:
-            if Vote().has_voted(office, user_id):
-                abort(Serializer.error_fn(400, 'You have already voted for a candidate in this office'))
+        if not candidate_registered:
+            abort(Serializer.error_fn(400, 'Candidate not registered'))
+        
+        if Vote().has_voted(office, user_id):
+            abort(Serializer.error_fn(400, 'You have already voted for a candidate in this office'))
 
-            response = Vote().cast_vote(office, user_id, candidate)
-
-            return Serializer.json_success('You successfully cast your vote', response, 201), 201
-            
-        abort(Serializer.error_fn(400, 'Candidate not registered'))
+        response = Vote().cast_vote(office, user_id, candidate)
+        return Serializer.json_success('You successfully cast your vote', response, 201), 201
         
     abort(Serializer.error_fn(401, 'User not authorized to make this request'))
 

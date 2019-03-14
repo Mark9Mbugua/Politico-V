@@ -87,6 +87,7 @@ class User():
         passcode = self.serializer_two(data)
         if self.verify_hash(password, passcode["pwd"]) is  True:
             return True
+        return False
     
     def get_password(self, username):
         cur = self.db.cursor()
