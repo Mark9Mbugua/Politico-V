@@ -1,12 +1,11 @@
-from app.db_config import init_db
+from app.db_config import Database
 from flask_jwt_extended import create_access_token
 from passlib.hash import pbkdf2_sha256 as sha256
 from psycopg2.extras import RealDictCursor
 
-class User():
+class User(Database):
     def __init__(self):
-        self.db = init_db()
-        self.cur = self.db.cursor(cursor_factory=RealDictCursor)
+        super().__init__()
     
     def register(self, firstname, lastname, username, email, phone, password):
         """Create a user account"""
@@ -15,7 +14,7 @@ class User():
         content = (firstname, lastname, username, email, phone, password)
         self.cur.execute(query, content)
         user = self.cur.fetchone()
-        self.db.commit()
+        self.connect.commit()
         return user
 
     def generate_token(self, username):
@@ -36,7 +35,7 @@ class User():
     
     def promote_user_to_admin(self):
         self.cur.execute("UPDATE users SET is_admin = 'true' where username = 'admin'")
-        self.db.commit()
+        self.connect.commit()
     
     def get_admin_by_id(self, user_id):
         self.cur.execute("""SELECT * from users WHERE user_id = {} and username = 'admin'""".format(user_id))

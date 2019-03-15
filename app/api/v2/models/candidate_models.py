@@ -1,11 +1,10 @@
-from app.db_config import init_db
+from app.db_config import Database
 from psycopg2.extras import RealDictCursor
 
 
-class Candidate():
+class Candidate(Database):
     def __init__(self):
-        self.db = init_db()
-        self.cur = self.db.cursor(cursor_factory=RealDictCursor)
+        super().__init__()
 
     def register_candidate(self, office, party, candidate):
         query = """INSERT INTO candidates(office, party, candidate)
@@ -13,7 +12,7 @@ class Candidate():
         content = (office, party, candidate)
         self.cur.execute(query, content)
         candidate = self.cur.fetchone()
-        self.db.commit()
+        self.connect.commit()
         return candidate
 
     def check_candidate_registered(self, candidate, office):

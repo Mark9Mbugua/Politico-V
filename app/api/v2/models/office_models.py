@@ -1,11 +1,10 @@
-from app.db_config import init_db
+from app.db_config import Database
 from psycopg2.extras import RealDictCursor
 import psycopg2
 
-class PoliticalOffices():
+class PoliticalOffices(Database):
     def __init__(self):
-        self.db = init_db()
-        self.cur = self.db.cursor(cursor_factory=RealDictCursor)
+        super().__init__()
 
     def create_office(self, office_name, office_type, location):
         query = """INSERT INTO offices(office_name, office_type, location)
@@ -13,7 +12,7 @@ class PoliticalOffices():
         content = (office_name, office_type, location)
         self.cur.execute(query, content)
         office = self.cur.fetchone()
-        self.db.commit()
+        self.connect.commit()
         self.cur.close()
         return office
     
@@ -34,5 +33,5 @@ class PoliticalOffices():
     
     def delete_office(self, office_id):
         self.cur.execute("""DELETE FROM offices WHERE office_id = '{}'""".format(office_id))
-        self.db.commit()
+        self.connect.commit()
         self.cur.close()

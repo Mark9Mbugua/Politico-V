@@ -1,5 +1,6 @@
 import os
 from app.api.v2.models.user_models import User
+from app.db_config import Database
 from app import create_app
 from flask import Flask, jsonify, request
 from flask_jwt_extended.exceptions import NoAuthorizationError
@@ -8,7 +9,9 @@ config_name = os.getenv('APP_SETTINGS')
 app = create_app(config_name)
 
 with app.app_context():
+    Database().create_tables()
     User().create_admin()
+
 
 @app.errorhandler(404)
 def invalid_url(error=None):
