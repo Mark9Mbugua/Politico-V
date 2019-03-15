@@ -1,13 +1,13 @@
-from flask import Flask, jsonify, request, make_response, Blueprint
+from flask import abort, Flask, jsonify, request, make_response, Blueprint
 from app.api.v2.models.user_models import User
 from app.api.v2.models.party_models import PoliticalParties
 from app.api.v2.models.office_models import PoliticalOffices
 from app.api.v2.utils.validators import Validators
 from app.api.v2.utils.serializer import Serializer
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+import psycopg2
 
 uv2 = Blueprint('up1', __name__, url_prefix='/api/v2')
-
 
 @uv2.route('/auth/signup', methods=['POST'])
 def post_user():
@@ -18,23 +18,44 @@ def post_user():
         firstname = data['firstname']
         lastname = data['lastname']
         username = data['username']
-        phone = data['phone']
         password = data['password']
-
-        response = Validators().user_sign_up_validator(firstname, lastname, email, phone, password)
+        phone = data['phone']
+        
     except KeyError:
-        return Serializer.error_serializer('One or more keys is missing', 400), 400
+        abort(Serializer.error_fn(400, 'Check if all fields exist'))
+
+    """Checks if fields are either of type string or integer"""
+    Validators().is_str_or_int(firstname, lastname, username, password, phone)
+
+    """Checks if fields are empty"""
+    Validators().is_space_or_empty(firstname, lastname, username, email, phone, password,
+    firstname=firstname, lastname=lastname,username=username, email=email, phone=phone, password=password)
     
-    if response == True:
-        if User().userIsValid(username) == True:
-            return Serializer.error_serializer('user already exists', 400), 400
+    """Checks if firstname and lastname contain any digits"""
+    Validators().is_digit(firstname, lastname)
+   
+    """Checks if phone number contain any digits"""
+    Validators().is_not_digit(phone)
 
-        password = User().generate_hash(password)
-        new_user = User().register(firstname, lastname, username, email, phone, password)
-        return Serializer.json_serializer('User signed up successfully', new_user, 201), 201
-    return make_response(jsonify(response), 400)
+    """Checks if field content has spaces in between"""
+    Validators().has_space(firstname, lastname, username, password, phone)
+    
+    """Checks if password is valid"""
+    Validators().check_valid_password(password)
+    
+    """Checks if email is valid"""
+    Validators().valid_email(email)
+    
+    """Checks if phone number is valid"""
+    Validators().valid_phone_number(phone)
 
+    if User().get_user_by_username(username):
+        abort(Serializer.error_fn(400, 'user already exists'))
 
+    password = User().generate_hash(password)
+    new_user = User().register(firstname, lastname, username, email, phone, password)
+    return Serializer.json_success('User signed up successfully', new_user, 201), 201
+ 
 @uv2.route('/auth/signin', methods=['POST'])
 def login():
     """ Route for signing in a user"""
@@ -43,16 +64,15 @@ def login():
         username = data['username']
         password = data['password']
     except KeyError:
-        return Serializer.error_serializer('One or more keys is missing', 400), 400
+        abort(Serializer.error_fn(400, 'Check if all fields exist'))
 
-    if User().userIsValid(username) == True:
-        if User().password_is_valid(username, password) == True:
-            access_token = User().user_login(username)
-
-            if access_token:
-                return Serializer.signup_serializer('You are now logged in', access_token, 201), 201
-            
-        return Serializer.error_serializer('Check if credentials are correct', 400), 400
+    if User().get_user_by_username(username):
+        if User().password_is_valid(username, password) == False:
+            abort(Serializer.error_fn(400, 'Check if credentials are correct'))
+        
+        access_token = User().user_login(username)
+        if access_token:
+            return Serializer.signup_success('You are now logged in', access_token, 201), 201
     
-    return Serializer.error_serializer('User does not exist', 404), 404
+    abort(Serializer.error_fn(404, 'User does not exist'))
 

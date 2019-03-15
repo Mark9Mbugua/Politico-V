@@ -1,7 +1,6 @@
 from flask import Flask, Blueprint, request, jsonify
 from flask_cors import CORS
 from instance.config import app_config
-from .db_config import init_db, drop_tables, init_prod_db
 from flask_jwt_extended import JWTManager
 
 def create_app(config_name):
@@ -34,7 +33,4 @@ def create_app(config_name):
     from .api.v2.views.vote_views import vv2
     app.register_blueprint(vv2)
     
-    #init_prod_db()
-    init_db()
-    #drop_tables()
     return app

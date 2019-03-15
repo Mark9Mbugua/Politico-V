@@ -1,106 +1,118 @@
-from passlib.hash import pbkdf2_sha256 as sha256
+from flask import abort, request
+from app.api.v2.utils.serializer import Serializer
+from urllib.parse import urlparse
 import re
 
 class Validators:
-    
     types_of_offices = ['Legislative', 'Executive', 'County']
-    office_names = ['President','Prime Minister' 'Governor', 'Senator', 'Member of Parliament', 'Women Rep', 'MCA']
+    
+    def is_alpha_or_space(self, *args):
+        for arg in args:
+            for x in arg:
+                if not x.isalpha() and not x.isspace():
+                    abort(Serializer.error_fn(400, '{} should have letters and spaces only'.format(arg)))
+    
+    def has_space(self, *args):
+        for arg in args:
+            if re.search(r'\s', arg):
+                abort(Serializer.error_fn(400, '{} should not have spaces'.format(arg))) 
+    
+    def is_space_or_empty(self, *args, **kwargs):
+        for arg in args:        
+            if arg.isspace():
+                abort(Serializer.error_fn(400, 'No field should be a space'))
+        
+        for value in kwargs.values():
+            if value == "":
+                abort(Serializer.error_fn(400, 'Ensure no field is blank'))
+  
+    def is_str_or_int(self, *args):
+        for arg in args:
+            if not isinstance(arg, str):
+               abort(Serializer.error_fn(400, 'All fields should be in string format'))
+            if isinstance(arg, int):
+                abort(Serializer.error_fn(400, 'All fields should be in string format'))
 
-    def party_data_validator(self, party_name, hqAddress):
-        response = True
-        if not all(x.isalpha() or x.isspace() for x in party_name):
-            response = {'Error': 'Name should only have letters and spaces', 'Status': 400}
-        
-        if not all(x.isdigit() or x.isalpha() or x.isspace() for x in hqAddress):
-            response = {'Error': 'hqAddress should have letters, spaces and numbers only', 'Status': 400}
-        
-        if all(x.isdigit() for x in hqAddress):
-            response = {'Error': 'hqAddress should have letters too', 'Status': 400}
+    def is_digit(self, *args):
+        for arg in args:    
+            for x in arg:
+                if x.isdigit():
+                    abort(Serializer.error_fn(400, '{} should only have letters'.format(arg)))
+    
+    def is_digit_or_letter(self, *args):
+        for arg in args:    
+            for x in arg:
+                if not x.isalpha() and not x.isdigit() and not x.isspace():
+                    abort(Serializer.error_fn(400, '{} should have letters. '\
+                         'It may also have digits and spaces'.format(arg)))
+    
+    def is_int(self, *args):
+        for arg in args:
+            if not isinstance(arg, int):
+                abort(Serializer.error_fn(400, '{} should be a number'.format(arg)))
 
-        if not isinstance(party_name, str):
-            response = {'Error': 'Name should be in string format', 'Status': 400}
+    
+    def is_not_digit(self, *args):
+        for arg in args:    
+            if not arg.isdigit():
+                abort(Serializer.error_fn(400, '{} should only have digits'.format(arg)))
 
-        if not isinstance(hqAddress, str):
-            response = {'Error': 'hqAddress should be in string format', 'Status': 400}
-        
-        if party_name == "" or party_name.isspace():
-            response = {'Error': 'Party name is required', 'Status': 400}
-        
-        if hqAddress == "" or hqAddress.isspace():
-            response = {'Error': 'hqAddress is required', 'Status': 400}
-        
-        return response
-
-    def office_data_validator(self, office_name, office_type):
-        response = True
-        if not isinstance(office_type, str):
-            response = {'Error': 'Office type should be in string format', 'Status': 400}
-            
-        if not isinstance(office_name, str):
-            response =  {'Error': 'Office name should be in string format', 'Status': 400}
-        
+    def valid_office_type(self, office_type, types_of_offices):
         if office_type not in self.types_of_offices:
-            response = {'Error': 'Office type must either be Legislative, Executive or County', 'Status': 400}
-            
+           abort(Serializer.error_fn(400, 'Office type must either be Legislative, Executive or County'))
+
+    def valid_legilative_office(self, office_type, office_name): 
         if office_type == 'Legislative':
             if 'Member of Parliament' not in office_name  and 'Women Rep' not in office_name and 'Senator' not in office_name:
-                response = {'Error': 'Only a Senator, Member of Parliament or a Women Rep can occupy a legislative office', 'Status': 400} 
-        
-        if office_type == 'Executive':
-            if 'President' not in office_name  and 'Prime Minister' not in office_name:
-                response = {'Error': 'Only the President or the Prime Minister can occupy an executive office', 'Status': 400} 
+                abort(Serializer.error_fn(400, "Only a Senator, Member of Parliament "\
+                    "or a Women Rep can occupy a legislative office"))
 
+    def valid_executive_office(self, office_type, office_name):     
+        if office_type == 'Executive':
+            if office_name != "President" or office_name != 'Prime Minister':
+                abort(Serializer.error_fn(400, "Only the President or the Prime Minister "\
+                    "can occupy an executive office"))
+    
+    def valid_executive_location(self, office_type, location):
+        if office_type == 'Executive':
+            if location != 'Kenya':
+                abort(Serializer.error_fn(400, 'The location of an executive office can only be Kenya'))
+   
+    def valid_county_office(self, office_type, office_name):
         if office_type == 'County':
             if 'Governor' not in office_name  and 'MCA' not in office_name:
-                response = {'Error': 'Only a Governor or an MCA can occupy a county office', 'Status': 400} 
-
-        return response 
+                abort(Serializer.error_fn(400, "Only a Governor or an MCA "\
+                    "can occupy a county office"))
     
-    def user_sign_up_validator(self, firstname, lastname, email, phone, password):
-        """ validates user password """
-        response = True
-        if len(password) < 8:
-            response = {'Error': 'Password should have at least 8 characters', 'Status': 400 }
-        
-        if not re.search('[A-Z]', password):
-            response = {'Error': 'Password should have atleast one capital letter', 'Status': 400}
-        
-        if not re.search('[a-z]', password):
-            response = {'Error': 'Password should have atleast one lowercase letter', 'Status': 400}
-        
-        if not re.search('[0-9]', password):
-            response = {'Error': 'Password should have atleast one number', 'Status': 400}
-        
-        if not all(x.isalpha() or x.isspace() for x in firstname):
-            response = {'Error': 'First name should only have letters and spaces', 'Status': 400}
-        
-        if not all(x.isalpha() or x.isspace() for x in lastname):
-            response = {'Error': 'Last name should only have letters and spaces', 'Status': 400}
-        
-        if re.search('@', email) is None:
-            response = {'Error': "Email should be in the format 'name@address.com'", 'Status': 400}
-        
-        if not isinstance(firstname, str):
-            response = {'Error': 'Name should be in string format', 'Status': 400}
-        
-        if not isinstance(lastname, str):
-            response = {'Error': 'Name should be in string format', 'Status': 400}
-        
-        if not isinstance(email, str):
-            response = {'Error': 'Email should be in string format', 'Status': 400}
-        
-        if len(email) < 9:
-            response = {'Error': 'Email is too short', 'Status': 400}
-        
-        if not all(x.isdigit() for x in phone):
-            response = {'Error': 'Phone number should have digits only', 'Status': 400}
-        
-        if len(phone) != 10:
-            response = {'Error': 'Phone number should have 10 digits', 'Status': 400}
-
-        return response
-        
-        
-
+    def check_valid_password(self, data):
+        if len(data) < 8:
+            abort(Serializer.error_fn(400, "Password should not be less than 8 characters"))    
+       
+        pwd_caps = re.search(r'[A-Z]', data)
+        pwd_small = re.search(r'[a-z]', data)
+        pwd_numbers = re.search(r'[0-9]', data)
+        if not pwd_caps or not pwd_small or not pwd_numbers:
+            abort(Serializer.error_fn(400,"Password should have at least one small letter, "\
+                          "one capital letter and one number"))
     
+    def valid_email(self, email):
+        valid = re.match(
+            r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email.strip())
+        if not valid:
+            abort(Serializer.error_fn(400, "Email address is invalid. "\
+            "Kindly enter a valid email address"))
+    
+    def valid_phone_number(self, phone):
+        if len(phone) != 12:
+            abort(Serializer.error_fn(400, "Phone number should have 12 digits. " \
+            "starting with the country code for example: 254712345678"))
+    
+    """Validate logoUrl"""
+    def valid_logo_url(self, url):
+        parsed_url = urlparse(url)
+        if not parsed_url.scheme or not parsed_url.netloc or not parsed_url.path:
+            abort(Serializer.error_fn(400, "logoUrl should be in the example format "\
+            "'https://www.twitter.com/profile/img.jpg'"))
+
+
 
