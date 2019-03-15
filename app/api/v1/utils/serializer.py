@@ -7,7 +7,9 @@ class Serializer:
         resp = make_response(jsonify({'message': message, 'data': data, 'status': status}))
         return resp
     
+    
     @classmethod
-    def json_error(cls, message, status):
-        resp = make_response(jsonify({'Error': message, 'status': status}))
-        return resp
+    def error_fn(cls, status, message):
+        if status in (404, 400, 405, 409, 401, 500):
+            resp = make_response(jsonify({'status': status, 'Error': message}), status)
+            return resp
