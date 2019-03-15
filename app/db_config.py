@@ -71,10 +71,8 @@ class Database:
 
                 queries = [users, parties, offices, votes, candidates]
                 
-                try:
-                        for query in queries:
-                                if query:
-                                        self.cur.execute(query)
-                                self.connect.commit()
-                except Exception as e:
-                        return e
+               
+                for query in queries:
+                        if query:
+                                self.cur.execute(query)
+                        self.connect.commit()
