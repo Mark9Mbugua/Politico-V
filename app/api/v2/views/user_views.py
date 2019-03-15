@@ -68,11 +68,11 @@ def login():
 
     if User().get_user_by_username(username):
         if User().password_is_valid(username, password) == False:
-            return Serializer.json_error('Check if credentials are correct', 400), 400
+            abort(Serializer.error_fn(400, 'Check if credentials are correct'))
         
         access_token = User().user_login(username)
         if access_token:
             return Serializer.signup_success('You are now logged in', access_token, 201), 201
     
-    return Serializer.json_error('User does not exist', 404), 404
+    abort(Serializer.error_fn(404, 'User does not exist'))
 

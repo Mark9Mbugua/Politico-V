@@ -10,7 +10,6 @@ class Database:
                 self.connect = psycopg2.connect(self.connect_url)
                 self.cur = self.connect.cursor(cursor_factory=RealDictCursor)
 
-
         def create_tables(self):
         
                 users = """CREATE TABLE IF NOT EXISTS users(
@@ -70,8 +69,7 @@ class Database:
                 candidates = "DROP TABLE IF EXISTS  candidates CASCADE"
 
                 queries = [users, parties, offices, votes, candidates]
-                
-               
+                       
                 for query in queries:
                         if query:
                                 self.cur.execute(query)

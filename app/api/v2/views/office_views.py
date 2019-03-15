@@ -18,7 +18,7 @@ def post_office():
             location = data["location"]
             
         except KeyError:
-            return Serializer.json_error('One or more keys is missing', 400), 400
+            abort(Serializer.error_fn(400, 'Check if all fields exist'))
         
         types_of_offices = ['Legislative', 'Executive', 'County']
 
