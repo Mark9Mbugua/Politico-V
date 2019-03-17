@@ -173,7 +173,8 @@ Only an admin is authorized to create an office
 
         {
             "office_type": "Legislative",
-            "office_name" : "Senator"
+            "office_name" : "Senator",
+            "location": "Kisumu"
         }
     
     + Headers
@@ -186,7 +187,8 @@ Only an admin is authorized to create an office
         "data": {
             "office_id": 2,
             "office_name": "Senator",
-            "office_type": "Legislative"
+            "office_type": "Legislative",
+            "location": "Kisumu"
         },
         "message": "Political office created successfully",
         "status": 201
@@ -212,6 +214,22 @@ Any user can view the details of a specific party via the party's ID
         "status": 201
     }
 
+### Delete a specific ofice [DELETE]
+
+Only an admin is authorized to delete a specific office
+
+    + Response 200 (application/json)
+
+        + Headers
+
+        x-access-token: ""
+
+        {
+            "data": null,
+            "message": "Political Office deleted successfully",
+            "status": 200
+        }
+
 ## Register a user as a candidate to vie for a specific office [/api/v2/offices/{office_id}/register]
 + Parameters
     + office_id (number) - ID of the office that a candidate would like to run for.
@@ -224,10 +242,8 @@ Only an admin is authorized to register a candidate
     + Body
 
         {
-			"office": 1,
             "party": 1,
-            "username": "Lilo",
-            "candidate": 1
+            "candidate": 3
         }
     
     + Headers
@@ -237,13 +253,13 @@ Only an admin is authorized to register a candidate
 + Response 201 (appication/json)
     {
         "data": {
-            "candidate": 1,
-            "email": "Lilo",
-            "office": 1
+            "candidate": 3,
+            "office": 1,
+            "party": 1
         },
         "message": "Candidate registered successfully",
         "status": 201
-    }
+}
 
 ## VOTE [/api/v2/vote]
 
@@ -256,9 +272,8 @@ A registered user can vote for a candidate in a specific office.
     + Body 
 
         {
-            "office_id": 2,
-            "candidate_id": 2,
-            "voter_id": 2
+            "office": 1,
+            "candidate": 3,
         }
 
     + Headers
@@ -268,14 +283,14 @@ A registered user can vote for a candidate in a specific office.
 + Response 201 (application/json)
 
     {
-        "data": {
-            "candidate_id": 2,
-            "office_id": 2,
-            "voter_id": 2
-        },
-        "message": "You successfully cast your vote",
-        "status": 201
-    }
+    "data": {
+        "candidate": 3,
+        "office": 1,
+        "voter": 3
+    },
+    "message": "You successfully cast your vote",
+    "status": 201
+}
 
 ## Signup [/api/v2/auth/signup]
 

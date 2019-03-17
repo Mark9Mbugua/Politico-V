@@ -50,7 +50,7 @@ def post_user():
     Validators().valid_phone_number(phone)
 
     if User().get_user_by_username(username):
-        abort(Serializer.error_fn(400, 'user already exists'))
+        abort(Serializer.error_fn(400, 'User already exists'))
 
     password = User().generate_hash(password)
     new_user = User().register(firstname, lastname, username, email, phone, password)
