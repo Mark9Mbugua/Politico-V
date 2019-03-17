@@ -20,13 +20,13 @@ Any user is able to make a request to view all the political parties.
                 {
                     "hqAddress": "Winterfell",
                     "logoUrl": "https://www.thestarks.com/starks_img/.jpg",
-                    "party_id": "1",
+                    "party_id": 1,
                     "party_name": "The Starks"
                 },
                 {
                     "hqAddress": "Muthaiga South",
                     "logoUrl": "https://www.jubilee.com/jubz_img/.jpg",
-                    "party_id": "2",
+                    "party_id": 2,
                     "party_name": "Jubilee"
                 }
                 ],
@@ -97,7 +97,7 @@ Only an admin is authorized to change the name of a specific political party
   + Body
 
             {
-                "party_name": "Man Dem",
+                "party_name": "Man Dem"
 
             }
     
@@ -108,10 +108,8 @@ Only an admin is authorized to change the name of a specific political party
 + Response 200 (application/json)
 
         {
-            "data": {
-                "name_change": [
-                    "Man Dem"
-                ]
+            "data":{
+                "party_name": "Man Dem"
             },
             "message": "Political party updated successfully",
             "status": 200
@@ -120,6 +118,12 @@ Only an admin is authorized to change the name of a specific political party
 ### Delete a specific party [DELETE]
 
 Only an admin is authorized to delete a specific party
+
++ Request
+    
+    + Headers
+
+            x-access-token: ""
 
 + Response 200 (application/json)
 
@@ -139,13 +143,15 @@ Any user is able to make a request to view all the political offices.
 
         {
                 "data": [
-                {
-                    "office_id": "1",
-                    "office_name": "member of Parliament",
+                {   
+                    "location": "Kimilili",
+                    "office_id": 1,
+                    "office_name": "Member of Parliament",
                     "office_type": "Legislative"
                 },
                 {
-                    "office_id": "2",
+                    "location": "Kiambu",
+                    "office_id": 2,
                     "office_name": "Senator",
                     "office_type": "Legislative"
                 }
@@ -199,6 +205,7 @@ Any user can view the details of a specific party via the party's ID
 
         {
             "data": {
+                "location": "Kiambu",
                 "office_id": 2,
                 "office_name": "Senator",
                 "office_type": "Legislative"
@@ -209,6 +216,12 @@ Any user can view the details of a specific party via the party's ID
 ### Delete a specific office [DELETE]
 
 Only an admin is authorized to delete a specific office
+
++ Request
+    
+    + Headers
+
+            x-access-token: ""
 
 + Response 200 (application/json)
 
@@ -262,9 +275,8 @@ A registered user can vote for a candidate in a specific office.
     + Body 
 
             {
-                "office_id": 2,
-                "candidate_id": 2,
-                "voter_id": 2
+                "office": 1,
+                "candidate": 3
             }
 
     + Headers
@@ -310,7 +322,7 @@ A new user is able to create a new Politico account.
                 "firstname": "Dickson",
                 "lastname": "Gichia",
                 "password": "$pbkdf2-sha256$29000$T4mRck5JSUkpJaQ0htCaUw$yDk4IhwdsW3VSkIrrUnJYA//Xr0Z5DuTlYDYwHyTkPA",
-                "phone": "0726847471",
+                "phone": "254726847471",
                 "user_id": 3,
                 "username": "Gichboy"
             },
@@ -355,8 +367,8 @@ Any user ccan view the results of the elections per political office
         {
             "data": [
                 {
-                    "candidate": 2,
-                    "office": 2,
+                    "candidate": 3,
+                    "office": 1,
                     "result": 1
                 }
             ],
