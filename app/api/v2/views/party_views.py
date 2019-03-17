@@ -25,6 +25,9 @@ def post_party():
         """Check if fields are strings"""
         Validators().is_str_or_int(party_name, hqAddress, logoUrl)
         
+        """Check if hqAddress are has digits only"""
+        Validators().all_digits(hqAddress)
+        
         """Check if hqAddress are has both digits and letters"""
         Validators().is_digit_or_letter(hqAddress)
 

@@ -29,28 +29,6 @@ class TestPartyRequestCase(TestElectionsCase):
     def test_post_party(self):
         """Test POST a party Request"""
         pass
-
-    def test_get_all_parties(self):
-        """Test GET all parties Request"""
-        response = self.client.post('/api/v1/parties', data=json.dumps(self.party), content_type='application/json')
-        result = json.loads(response.data)
-        response = self.client.get('/api/v1/parties')
-        result = json.loads(response.data)
-        self.assertEqual(result['message'], 'All political parties retrieved successfully')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue('data' in result)
-        self.assertIn('Jubilee', str(result))
-
-    def test_get_specific_party(self):
-        """Test GET one party request"""
-        response = self.client.post('/api/v1/parties', data=json.dumps(self.party), content_type='application/json')
-        result = json.loads(response.data)
-        response = self.client.get('/api/v1/parties/1')
-        result = json.loads(response.data)
-        self.assertEqual(result['message'], 'Political party retrieved successfully')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue('data' in result)
-        self.assertIn('Muthaiga', str(result))
     
     def test_edit_specific_party(self):
         """Test PATCH one party request"""
@@ -150,25 +128,6 @@ class TestBadRequestCase(TestElectionsCase):
         self.assertEqual(response.status_code, 400)
         self.assertFalse('data' in result)
     
-    def test_edit_party_name_blank(self):
-        response = self.client.post('/api/v1/parties', data=json.dumps(self.party), content_type='application/json')
-        result = json.loads(response.data)
-        response = self.client.patch('/api/v1/parties/1', data=json.dumps(self.party_name_blank), content_type='application/json')
-        result = json.loads(response.data)
-        self.assertEqual(result['Error'], 'Party name is required')
-        self.assertEqual(response.status_code, 400)
-        self.assertFalse('data' in result)
-    
-    def test_edit_party_name_not_purely_alpha_and_space(self):
-        response = self.client.post('/api/v1/parties', data=json.dumps(self.party), content_type='application/json')
-        result = json.loads(response.data)
-        response = self.client.patch('/api/v1/parties/1', data=json.dumps(self.party_name_not_purely_alpha_and_space), content_type='application/json')
-        result = json.loads(response.data)
-        self.assertEqual(result['Error'], 'Name should only have letters and spaces')
-        self.assertEqual(response.status_code, 400)
-        self.assertFalse('data' in result)
-    
-
 class TestNotFoundCase(TestElectionsCase):
        
     def test_get_specific_party_invalid_id(self):
@@ -187,14 +146,6 @@ class TestNotFoundCase(TestElectionsCase):
         self.assertEqual(response.status_code, 404)
         self.assertFalse('data' in result)
     
-    def test_patch_invalid_party_id(self):
-        response = self.client.post('/api/v1/parties', data=json.dumps(self.party), content_type='application/json')
-        result = json.loads(response.data)
-        response = self.client.patch('/api/v1/parties/3000', data=json.dumps(self.party), content_type='application/json')
-        result = json.loads(response.data)
-        self.assertEqual(result['Error'], 'Political party cannot be found')
-        self.assertEqual(response.status_code, 404)
-        self.assertFalse('data' in result)
         
 
         

@@ -11,6 +11,14 @@ install:
   - pip install coveralls codecov
   - pip install pytest
 
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database politico_db;' -U postgres
+  - psql -c 'create database test_politico_db;' -U postgres
+
+
 script:
   - pytest --cov=app/
 

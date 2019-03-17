@@ -10,7 +10,7 @@ class Validators:
         for arg in args:
             for x in arg:
                 if not x.isalpha() and not x.isspace():
-                    abort(Serializer.error_fn(400, '{} should have letters and spaces only'.format(arg)))
+                    abort(Serializer.error_fn(400, '{} should only have letters and spaces'.format(arg)))
     
     def has_space(self, *args):
         for arg in args:
@@ -38,6 +38,11 @@ class Validators:
             for x in arg:
                 if x.isdigit():
                     abort(Serializer.error_fn(400, '{} should only have letters'.format(arg)))
+
+    def all_digits(self, *args):
+        for arg in args:    
+            if arg.isdigit():
+                abort(Serializer.error_fn(400, '{} should have letters too'.format(arg)))
     
     def is_digit_or_letter(self, *args):
         for arg in args:    
@@ -50,8 +55,7 @@ class Validators:
         for arg in args:
             if not isinstance(arg, int):
                 abort(Serializer.error_fn(400, '{} should be a number'.format(arg)))
-
-    
+ 
     def is_not_digit(self, *args):
         for arg in args:    
             if not arg.isdigit():
@@ -69,7 +73,7 @@ class Validators:
 
     def valid_executive_office(self, office_type, office_name):     
         if office_type == 'Executive':
-            if office_name != "President" or office_name != 'Prime Minister':
+            if office_name != "President" and office_name != 'Prime Minister':
                 abort(Serializer.error_fn(400, "Only the President or the Prime Minister "\
                     "can occupy an executive office"))
     
@@ -104,7 +108,7 @@ class Validators:
     
     def valid_phone_number(self, phone):
         if len(phone) != 12:
-            abort(Serializer.error_fn(400, "Phone number should have 12 digits. " \
+            abort(Serializer.error_fn(400, "Phone number should have 12 digits " \
             "starting with the country code for example: 254712345678"))
     
     """Validate logoUrl"""
