@@ -1,0 +1,30 @@
+language: python
+
+python:
+  - '3.6'
+
+env:
+  - FLASK_ENV='testing'
+
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls codecov
+  - pip install pytest
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'CREATE DATABASE politico_db;' -U postgres
+  - psql -c 'CREATE DATABASE test_politico_db;' -U postgres
+
+env:
+  - DATABASE_URL="postgresql://postgres:1998@localhost:5432/test_politico_db"
+
+
+script:
+  - pytest --cov=app/
+
+
+after_success:
+  - coveralls
