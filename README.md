@@ -94,4 +94,4 @@ Use this URL below to test the following endpoints: https://politico-final.herok
 * Flask
 
 ### Credits
-Coypright (c) [Mark Mbugua](https://github.com/Mark9Mbugua)
+Copyright (c) [Mark Mbugua](https://github.com/Mark9Mbugua)
