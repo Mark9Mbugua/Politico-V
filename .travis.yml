@@ -15,8 +15,11 @@ services:
   - postgresql
 
 before_script:
-  - psql -c 'create database politico_db;' -U postgres
-  - psql -c 'create database test_politico_db;' -U postgres
+  - psql -c 'CREATE DATABASE politico_db;' -U postgres
+  - psql -c 'CREATE DATABASE test_politico_db;' -U postgres
+
+env:
+  - DATABASE_URL="postgresql://postgres:1998@localhost:5432/test_politico_db"
 
 
 script:
