@@ -28,7 +28,7 @@ def post_candidate(office_id):
        
         """cannot register admin as a candidate"""
         if User().get_admin_by_id(candidate):
-            abort(Serializer.error_fn(400, 'You are not authorized to register admin as a candidate'))
+            abort(Serializer.error_fn(401, 'You are not authorized to register admin as a candidate'))
   
         if not User().find_by_user_id(candidate):
             abort(Serializer.error_fn(404, 'Candidate does not exist'))
