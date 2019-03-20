@@ -6,7 +6,7 @@ from flask import Flask, jsonify, request
 from flask_jwt_extended.exceptions import NoAuthorizationError
 
 config_name = os.getenv('APP_SETTINGS')
-app = create_app("production")
+app = create_app(config_name)
 
 with app.app_context():
     Database().create_tables()
