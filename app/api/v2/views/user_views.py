@@ -66,13 +66,14 @@ def login():
     except KeyError:
         abort(Serializer.error_fn(400, 'Check if all fields exist'))
 
-    if User().get_user_by_username(username):
+    user = User().get_user_by_username(username)
+    if user:
         if User().password_is_valid(username, password) == False:
             abort(Serializer.error_fn(400, 'Check if credentials are correct'))
         
         access_token = User().user_login(username)
         if access_token:
-            return Serializer.signup_success('You are now logged in', access_token, 201), 201
+            return Serializer.signup_success('You are now logged in', user, access_token, 201), 201
     
     abort(Serializer.error_fn(404, 'User does not exist'))
 

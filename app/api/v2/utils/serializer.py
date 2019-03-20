@@ -8,8 +8,8 @@ class Serializer:
         return resp
     
     @classmethod
-    def signup_success(cls, message, token, status):
-        resp = make_response(jsonify({'message': message, 'token': token, 'status': status}))
+    def signup_success(cls, message, user, token, status):
+        resp = make_response(jsonify({'message': message, 'token': token, 'user': user, 'status': status}))
         return resp
 
     @classmethod
